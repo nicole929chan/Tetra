@@ -11,6 +11,13 @@
 |
 */
 
+Route::get('/selection', function () {
+    return view('selection');
+});
+Route::get('/room', function () {
+    return view('room');
+});
+
 Route::get('/', function () {
     return view('welcome');
 });

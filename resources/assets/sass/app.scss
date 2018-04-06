@@ -9,6 +9,77 @@
 @import '~bootstrap/scss/bootstrap';
 
 .navbar-laravel {
-  background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  height: 45px;
+  background-color: #5aabae;
+}
+
+.navbar-nav {
+  margin: auto;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+#sidebar{
+  z-index: 2;
+  border: 1px solid #ffffff;
+  background-color: #ffffff;
+}
+
+#profile {
+  background-color: #333333;
+  height: 120px;
+}
+
+#profile .media-body {
+  color: #ffffff;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+#rooms {
+  height: 45px;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+#command button {
+  height: 45px;
+}
+
+.card-body {
+  overflow-y: auto;
+}
+
+#sidebar-open {
+  display: none;
+  position: absolute;
+  top: 100px;
+  left: 0;
+}
+
+#menu-open {
+  display: none;
+  position: absolute;
+  top: 0px;
+  right: 50%;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+#view_select-open {
+  display: none;
+  position: absolute;
+  bottom: 0px;
+  right: 50%;
+}
+
+#carouselExampleControls {
+  background: url('/images/carousel-bg.png');
 }
