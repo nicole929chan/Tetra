@@ -16,7 +16,7 @@ class UserTest extends TestCase
     	$user = create('App\User');
     	$project = create('App\Project');
 
-    	\DB::table('project_user', ['project_id' => $project->id, 'user_id' => $user->id]);
+    	\DB::table('project_user')->insert(['project_id' => $project->id, 'user_id' => $user->id]);
 
     	$this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $user->projects);
     }
