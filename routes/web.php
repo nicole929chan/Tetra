@@ -1,22 +1,18 @@
 <?php
+Route::get('project', function () {
+	return 'project list page';
+})->name('projects.index');
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+Route::get('rooms/{room}/selections', 'SelectionController@index')->name('selection.index');
+Route::post('rooms/selections/{selection}', 'SelectionController@store')->name('selection.store');
 
-Route::get('/selection', function () {
-    return view('selection');
-});
-Route::get('/room', function () {
-    return view('room');
-});
+// Route::get('/selection', function () {
+//     return view('selection');
+// });
+
+// Route::get('/room', function () {
+//     return view('room');
+// });
 
 Route::get('/', function () {
     return view('welcome');

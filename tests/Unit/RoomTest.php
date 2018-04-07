@@ -23,7 +23,7 @@ class RoomTest extends TestCase
     public function 一個room有多個selections()
     {
     	$room = create('App\Room');
-    	$selection = create('App\Selection');
+    	$selection = create('App\Selection', ['room_id' => $room->id]);
 
     	$this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $room->selections);
     }

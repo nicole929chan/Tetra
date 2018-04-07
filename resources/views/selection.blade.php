@@ -1,10 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
     <div class="row">
         <div class="col">
-          <img src="{{ asset('images/demo_main.png') }}" class="img-fluid" alt="">
+          <img src="{{ asset('storage/' . $selections->shift()->image_path) }}" class="img-fluid">
         </div>
     </div>
 </div>
@@ -19,36 +20,25 @@
   </div>
   <div id="carouselExampleControls" class="carousel slide p-3" data-ride="carousel">
     <div class="carousel-inner col-10 offset-1">
+      @php
+        $chunk = $selections->splice(4);
+      @endphp
       <div class="carousel-item active">
         <div class="row">
+        @foreach ($selections->all() as $selection)
           <div class="col-3">
-            <img class="d-block w-100" src="https://dummyimage.com/600x400/a4b8eb/0011ff.png&text=first" alt="First slide">
+            <img class="d-block w-100" src="{{ asset('storage/' . $selection->image_path) }}">
           </div>
-          <div class="col-3">
-            <img class="d-block w-100" src="https://dummyimage.com/600x400/a4b8eb/0011ff.png&text=Second" alt="First slide">
-          </div>
-          <div class="col-3">
-            <img class="d-block w-100" src="https://dummyimage.com/600x400/a4b8eb/0011ff.png&text=Third" alt="First slide">
-          </div>
-          <div class="col-3">
-            <img class="d-block w-100" src="https://dummyimage.com/600x400/a4b8eb/0011ff.png&text=four" alt="First slide">
-          </div>
+        @endforeach
         </div>
       </div>
       <div class="carousel-item">
         <div class="row">
-          <div class="col-3">
-            <img class="d-block w-100" src="https://dummyimage.com/600x400/a4b8eb/0011ff.png&text=four" alt="First slide">
-          </div>
-          <div class="col-3">
-            <img class="d-block w-100" src="https://dummyimage.com/600x400/a4b8eb/0011ff.png&text=four" alt="First slide">
-          </div>
-          <div class="col-3">
-            <img class="d-block w-100" src="https://dummyimage.com/600x400/a4b8eb/0011ff.png&text=five" alt="First slide">
-          </div>
-          <div class="col-3">
-            <img class="d-block w-100" src="https://dummyimage.com/600x400/a4b8eb/0011ff.png&text=six" alt="First slide">
-          </div>
+          @foreach ($chunk as $selection)
+            <div class="col-3">
+              <img class="d-block w-100" src="{{ asset('storage/' . $selection->image_path) }}">
+            </div>
+          @endforeach
         </div>
       </div>
     </div>
