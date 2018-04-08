@@ -61,3 +61,53 @@
     </div>
 </div>
 @endsection
+
+@section('bottom')
+
+<div class="row fixed-bottom justify-content-center">
+  <div class="col-8 offset-2">
+    <ul id="bottom-tool">
+      <li class="m-0 active">
+        <div style="padding: 5px 10px;">
+          <div class="float-left mr-3">
+            <div style="font-size:10px;">12 Dec 2017</div>
+            <div>VERSION</div>
+          </div>
+          <div class="version">3</div>
+        </div>
+      </li>
+      <li class="m-0">
+        <div style="padding: 5px 10px;">
+          <div class="float-left mr-3">
+            <div style="font-size:10px;">12 Dec 2017</div>
+            <div>VERSION</div>
+          </div>
+          <div class="version">2</div>
+        </div>
+      </li>
+      <li class="m-0">
+        <div style="padding: 5px 10px;">
+          <div class="float-left mr-3">
+            <div style="font-size:10px;">12 Dec 2017</div>
+            <div>VERSION</div>
+          </div>
+          <div class="version">1</div>
+        </div>
+      </li>
+      <li class="m-0">
+        <div style="padding: 5px 10px;">
+          <div class="float-left mr-3">
+            <div style="font-size:10px;">12 Dec 2017</div>
+            <div>View selection</div>
+          </div>
+        </div>
+      </li>
+      <li class="m-0">
+        <div style="padding: 5px 10px;" class="text-center">
+          <img src="{{ asset('/images/toggle_on.png') }}" alt="" style="padding:13px;">
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+@endsection
