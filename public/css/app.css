@@ -10071,3 +10071,24 @@ a.text-dark:focus {
   background: url("/images/carousel-bg.png");
 }
 
+.version {
+  font-size: 33pt;
+  line-height: 26pt;
+}
+
+#bottom-tool {
+  list-style: none;
+}
+
+#bottom-tool li {
+  float: left;
+  border: 1px solid #ffffff;
+  background-color: #cccccc;
+  width: 130px;
+  height: 45px;
+}
+
+#bottom-tool .active {
+  background-color: #ffffff;
+}
+
