@@ -27,4 +27,13 @@ class RoomTest extends TestCase
 
     	$this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $room->selections);
     }
+
+    /** @test */
+    public function 一個room有多個versions()
+    {
+        $room = create('App\Room');
+        $version = create('App\Version', ['room_id' => $room->id]);
+
+        $this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $room->versions);
+    }
 }

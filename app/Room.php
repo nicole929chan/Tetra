@@ -17,4 +17,9 @@ class Room extends Model
     {
     	return $this->hasMany(Selection::class);
     }
+
+    public function versions()
+    {
+    	return $this->hasMany(Version::class);
+    }
 }
