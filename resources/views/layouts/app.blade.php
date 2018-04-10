@@ -26,38 +26,12 @@
     <div id="app">
       <div class="row">
         <div id="sidebar" class="col-3 position-fixed">
-          <div id="profile" class="row align-item-center">
-            <div class="col-10 media">
-              <img src="https://dummyimage.com/80/828187/ffffff.jpg&text=MNS" class="rounded-circle align-self-center mr-3 ml-3" alt="">
-              <div class="media-body align-self-center">
-                75 Greene Avenue,<br>
-                Brooklyn<br>
-                NY 11201
-              </div>
-            </div>
-            <div class="col-2">
-              <a href="#" id="sidebar-arrow"><img src="{{ asset('/images/tools_off.png')}}" alt="" class="mt-5" ></a>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col pr-0">
-              <form action="#">
-                <select name="rooms" id="rooms" class="custom-select">
-                  <option value="">MASTER BATH 5F</option>
-                </select>
-              </form>
-            </div>
-          </div>
+          @yield('profile')
+          
           @yield('activity')
 
-          <div id="command" class="row">
-            <div class="col pr-0 pl-0">
-              <button class="btn btn-primary btn-block">Download Image</button>
-            </div>
-            <div class="col pr-0 pl-0">
-              <button class="btn btn-danger btn-block">Submit Feedback</button>
-            </div>
-          </div>
+          @yield('command')
+
         </div>
         <div class="col">
           <nav class="navbar navbar-expand-md navbar-light navbar-laravel" id="menu">
