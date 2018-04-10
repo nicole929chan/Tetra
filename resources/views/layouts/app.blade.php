@@ -27,7 +27,7 @@
       <div class="row">
         <div id="sidebar" class="col-3 position-fixed">
           @yield('profile')
-          
+
           @yield('activity')
 
           @yield('command')
@@ -99,8 +99,6 @@
 </body>
 <script type="text/javascript">
 $(document).ready(function(){
-  var height = $(window).height() - 205 -116;
-  $("#collapseOne .card-body").css('height', height);
 
   $("#sidebar-arrow").click(function(){
     $("#sidebar-open").css('display', 'block');

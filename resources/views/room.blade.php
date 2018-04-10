@@ -139,10 +139,47 @@
       </li>
       <li class="m-0">
         <div style="padding: 5px 10px;" class="text-center">
-          <img src="{{ asset('/images/toggle_on.png') }}" alt="" style="padding:13px;">
+          <a href="#" id="bottom_off"><img src="{{ asset('/images/toggle_on.png') }}" alt="" style="padding:13px;"></a>
         </div>
       </li>
     </ul>
   </div>
 </div>
+
+<div id="view_select-open">
+  <a href="#" id="view_select_on"><img src="{{ asset('images/view_select_on.png') }}" alt=""></a>
+</div>
+@endsection
+
+@section('after_script')
+<script type="text/javascript">
+$(document).ready(function(){
+
+  var height = $(window).height() - 205;
+  $("#activity").css('max-height', height);
+  $("#activity").css('min-height', height);
+
+  var selection_height = 0;
+  //關閉底部
+  $("#bottom_off").click(function(event){
+    event.preventDefault();
+    selection_height = $("#view_select").height();
+
+    $("#view_select-open").css('display', 'block');
+    $("#bottom-tool").stop(true).animate({ opacity: '0'}, 'slow', function(){
+      $("#bottom-tool").css('display', 'none');
+    });
+  });
+
+  //展開底部
+  $("#view_select_on").click(function(event){
+    event.preventDefault();
+    $("#view_select-open").css('display', 'none');
+    $("#bottom-tool").css('display', 'block');
+    $("#bottom-tool").stop(true).animate({height: selection_height, opacity: '1'}, 'slow', function(){
+    });
+  });
+
+});
+</script>
 @endsection

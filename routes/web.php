@@ -10,9 +10,9 @@ Route::post('rooms/selections/{selection}', 'SelectionController@store')->name('
 //     return view('selection');
 // });
 
-// Route::get('/room', function () {
-//     return view('room');
-// });
+Route::get('/room', function () {
+    return view('room');
+});
 
 Route::get('/', function () {
     return view('welcome');
