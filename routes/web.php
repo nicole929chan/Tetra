@@ -6,13 +6,15 @@ Route::get('project', function () {
 Route::get('rooms/{room}/selections', 'SelectionController@index')->name('selection.index');
 Route::post('rooms/selections/{selection}', 'SelectionController@store')->name('selection.store');
 
+Route::get('comments/versions/{version}', 'CommentsController@index')->name('comments.index');
+
 // Route::get('/selection', function () {
 //     return view('selection');
 // });
 
-// Route::get('/room', function () {
-//     return view('room');
-// });
+Route::get('/room', function () {
+    return view('room');
+});
 
 Route::get('/', function () {
     return view('welcome');
