@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
+	protected $guarded = [];
+	
     public function version()
     {
     	return $this->belongsTo(Version::class);
