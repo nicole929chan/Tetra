@@ -1,4 +1,9 @@
 @extends('layouts.app')
+
+@section('after_style')
+<link href="{{ asset('css/room.css') }}" rel="stylesheet">
+@endsection
+
 @section('profile')
 <div id="profile" class="row align-item-center">
   <div class="col-10 media">
@@ -76,22 +81,10 @@
 @endsection
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Dashboard</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    You are logged in!
-                </div>
-            </div>
+        <div class="col p-0">
+          <div id="mapid" style="height:200px; width:100%;"></div>
         </div>
     </div>
 </div>
@@ -152,34 +145,5 @@
 @endsection
 
 @section('after_script')
-<script type="text/javascript">
-$(document).ready(function(){
-
-  var height = $(window).height() - 205;
-  $("#activity").css('max-height', height);
-  $("#activity").css('min-height', height);
-
-  var selection_height = 0;
-  //關閉底部
-  $("#bottom_off").click(function(event){
-    event.preventDefault();
-    selection_height = $("#view_select").height();
-
-    $("#view_select-open").css('display', 'block');
-    $("#bottom-tool").stop(true).animate({ opacity: '0'}, 'slow', function(){
-      $("#bottom-tool").css('display', 'none');
-    });
-  });
-
-  //展開底部
-  $("#view_select_on").click(function(event){
-    event.preventDefault();
-    $("#view_select-open").css('display', 'none');
-    $("#bottom-tool").css('display', 'block');
-    $("#bottom-tool").stop(true).animate({height: selection_height, opacity: '1'}, 'slow', function(){
-    });
-  });
-
-});
-</script>
+<script src="{{ asset('js/room.js') }}" defer></script>
 @endsection

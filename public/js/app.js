@@ -13867,7 +13867,8 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(12);
-module.exports = __webpack_require__(43);
+__webpack_require__(43);
+module.exports = __webpack_require__(44);
 
 
 /***/ }),
@@ -13895,6 +13896,39 @@ Vue.component('example-component', __webpack_require__(39));
 
 var app = new Vue({
   el: '#app'
+});
+
+$(document).ready(function () {
+
+  $("#sidebar-arrow").click(function () {
+    $("#sidebar-open").css('display', 'block');
+    $("#sidebar").stop(true).animate({ width: 0, opacity: '0' }, 'slow', function () {
+      $("#sidebar").css('display', 'none');
+    });
+  });
+
+  $("#tools_on").click(function () {
+    $("#sidebar-open").css('display', 'none');
+    $("#sidebar").css('display', 'block');
+    $("#sidebar").stop(true).animate({ width: '100%', opacity: '1' }, 'slow', function () {});
+  });
+
+  $("#menu_off").click(function () {
+    $("#menu-open").css('display', 'block');
+    var mapid_height = $("#mapid").height() + 45;
+    $("#mapid").css('height', mapid_height);
+    $("#menu").stop(true).animate({ height: 0, opacity: '0' }, 'slow', function () {
+      $("#menu").css('display', 'none');
+    });
+  });
+
+  $("#menu_on").click(function () {
+    $("#menu-open").css('display', 'none');
+    $("#menu").css('display', 'block');
+    var mapid_height = $("#mapid").height() - 45;
+    $("#mapid").css('height', mapid_height);
+    $("#menu").stop(true).animate({ height: '45px', opacity: '1' }, 'slow', function () {});
+  });
 });
 
 /***/ }),
@@ -47335,6 +47369,12 @@ if (false) {
 
 /***/ }),
 /* 43 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 44 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

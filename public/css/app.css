@@ -10011,7 +10011,7 @@ a.text-dark:focus {
 }
 
 #sidebar {
-  z-index: 2;
+  z-index: 999;
   border: 1px solid #ffffff;
   background-color: #ffffff;
 }
@@ -10046,6 +10046,7 @@ a.text-dark:focus {
   position: absolute;
   top: 100px;
   left: 0;
+  z-index: 999;
 }
 
 #menu-open {
@@ -10053,6 +10054,7 @@ a.text-dark:focus {
   position: absolute;
   top: 0px;
   right: 50%;
+  z-index: 999;
 }
 
 .navbar-light .navbar-nav .nav-link {
@@ -10065,6 +10067,7 @@ a.text-dark:focus {
   position: absolute;
   bottom: 0px;
   right: 50%;
+  z-index: 999;
 }
 
 #carouselExampleControls {
