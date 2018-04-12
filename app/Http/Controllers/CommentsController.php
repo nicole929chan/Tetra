@@ -60,7 +60,7 @@ class CommentsController extends Controller
      */
     public function update(Request $request, Comment $comment, Version $version)
     {
-    	$this->authorize('update', $version->room);
+    	$this->authorize('update', $comment);
 
     	$request->validate(['body' => 'required']);
 
@@ -70,9 +70,9 @@ class CommentsController extends Controller
     	if (request()->expectsJson()) return ['message' => 'Comment Updated!', 'comment' => $comment];
     }
 
-    public function destroy(Comment $comment, Version $version)
+    public function destroy(Comment $comment)
     {
-    	$this->authorize('update', $version->room);
+    	$this->authorize('delete', $comment);
     	
     	Storage::disk('public')->delete($comment->file_path);
 

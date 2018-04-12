@@ -8,8 +8,8 @@ Route::post('rooms/selections/{selection}', 'SelectionController@store')->name('
 
 Route::get('comments/versions/{version}', 'CommentsController@index')->name('comments.index');
 Route::post('comments/versions/{version}', 'CommentsController@store')->name('comments.store');
-Route::patch('comments/{comment}/versions/{version}', 'CommentsController@update')->name('comments.update');
-Route::delete('comments/{comment}/versions/{version}', 'CommentsController@destroy')->name('comments.destroy');
+Route::patch('comments/{comment}', 'CommentsController@update')->name('comments.update');
+Route::delete('comments/{comment}', 'CommentsController@destroy')->name('comments.destroy');
 
 // Route::get('/selection', function () {
 //     return view('selection');

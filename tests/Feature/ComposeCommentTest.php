@@ -104,14 +104,16 @@ class ComposeCommentTest extends TestCase
     }
 
     /** @test */
-    public function 已經登入的使用者能夠更新自己專案內的comments()
+    public function 已經登入的使用者能夠更新自己發的comments()
     {
-    	$this->initProject();
+        $this->signIn($user = create('App\User'));
+        
+        $comment = create('App\Comment', ['creator_id' => $user->id]);
 
-    	$this->json('patch', route('comments.update', [$this->comment->id, $this->version->id]), ['body' => 'update comment']);
+    	$this->json('patch', route('comments.update', [$comment->id]), ['body' => 'update comment']);
 
     	$this->assertDatabaseHas('comments', [
-    		'id' => $this->comment->id,
+    		'id' => $comment->id,
     		'body' => 'update comment'
     	]);
     }
@@ -119,38 +121,42 @@ class ComposeCommentTest extends TestCase
     /** @test */
     public function 更新的comment必須填寫body()
     {
-    	$this->initProject();
+    	$this->signIn($user = create('App\User'));
+        
+        $comment = create('App\Comment', ['creator_id' => $user->id]);
 
-    	$this->patch(route('comments.update', [$this->comment->id, $this->version->id]), ['body' => null])
+    	$this->patch(route('comments.update', [$comment->id]), ['body' => null])
     	    ->assertSessionHasErrors('body');
     }
 
     /** @test */
-    public function 已經登入的使用者不能夠更新不是自己專案內的comments()
+    public function 已經登入的使用者不能夠更新不是自己發的comments()
     {
-    	$this->initProject();
-    	auth()->logout();
-
     	$this->signIn($user = create('App\User'));
 
-    	$this->patch(route('comments.update', [$this->comment->id, $this->version->id]), ['body' => 'update comment'])
+        $comment = create('App\Comment');
+
+    	$this->patch(route('comments.update', [$comment->id]), ['body' => 'update comment'])
     	    ->assertStatus(403);
     }
 
     /** @test */
-    public function 已經登入的使用者能夠刪除自己專案內的comments()
+    public function 已經登入的使用者能夠刪除自己發的comments()
     {
-    	$this->initProject();
+        $this->initProject();
 
     	Storage::fake('public');
 
-    	$comment = make('App\Comment', ['file_path' => $file = UploadedFile::fake()->image('comment.png')]);
+    	$comment = make('App\Comment', [
+            'creator_id' => $this->user->id,
+            'file_path' => $file = UploadedFile::fake()->image('comment.png')
+        ]);
 
     	$this->json('POST', route('comments.store', $this->version->id), $comment->toArray());
 
     	$comment = \App\Comment::orderBy('id', 'desc')->first();
 
-    	$this->delete(route('comments.destroy', [$comment->id, $comment->version->id]));
+    	$this->delete(route('comments.destroy', [$comment->id]));
 
     	Storage::disk('public')->assertMissing($comment->file_path);
     	
@@ -158,14 +164,14 @@ class ComposeCommentTest extends TestCase
     }
 
     /** @test */
-    public function 已經登入的使用者不能夠刪除不是自己專案內的comments()
+    public function 已經登入的使用者不能夠刪除不是自己發的comments()
     {
     	$this->initProject();
     	auth()->logout();
 
     	$this->signIn($user = create('App\User'));
 
-    	$this->delete(route('comments.destroy', [$this->comment->id, $this->version->id]))
+    	$this->delete(route('comments.destroy', [$this->comment->id]))
     	    ->assertStatus(403);
     }
 
