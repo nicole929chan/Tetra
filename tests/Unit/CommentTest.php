@@ -27,4 +27,16 @@ class CommentTest extends TestCase
 
     	$this->assertInstanceOf('App\User', $comment->creator);
     }
+
+    /** @test */
+    public function 一則發文有多筆replies回應()
+    {
+        $comment = create('App\Comment');
+        $replies = create('App\Reply', [
+            'repliable_type' => get_class($comment),
+            'repliable_id' => $comment->id,
+        ], 2);
+
+        $this->assertEquals(2, $comment->replies->count());
+    }
 }

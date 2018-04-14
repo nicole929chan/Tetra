@@ -31,6 +31,23 @@ class ComposeCommentTest extends TestCase
     }
 
     /** @test */
+    public function 瀏覽comments一併把附屬的replies帶出來()
+    {
+        $this->initProject();
+
+        $replies = create('App\Reply', [
+            'repliable_type' => get_class($this->comment),
+            'repliable_id' => $this->comment->id,
+        ],2);
+
+        $response = $this->json('GET', route('comments.index', [$this->version->id]))->json();
+
+        $data = array_column($response, "replies");
+
+        $this->assertEquals(2, count($data[0]));
+    }
+
+    /** @test */
     public function 瀏覽的comments必須以新增的時間戳記降冪排序()
     {
     	$this->initProject();

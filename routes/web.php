@@ -11,6 +11,10 @@ Route::post('comments/versions/{version}', 'CommentsController@store')->name('co
 Route::patch('comments/{comment}', 'CommentsController@update')->name('comments.update');
 Route::delete('comments/{comment}', 'CommentsController@destroy')->name('comments.destroy');
 
+Route::post('replies/comments/{comment}', 'RepliesController@store')->name('replies.store');
+Route::patch('replies/{reply}', 'RepliesController@update')->name('replies.update');
+Route::delete('replies/{reply}', 'RepliesController@destroy')->name('replies.destroy');
+
 // Route::get('/selection', function () {
 //     return view('selection');
 // });
