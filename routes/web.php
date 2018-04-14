@@ -20,6 +20,8 @@ Route::post('marks/versions/{version}', 'MarksController@store')->name('marks.st
 Route::patch('marks/{mark}', 'MarksController@update')->name('marks.update');
 Route::delete('marks/{mark}', 'MarksController@destroy')->name('marks.destroy');
 
+Route::get('activities/versions/{version}', 'ActivitiesController@index')->name('activities.index');
+
 // Route::get('/selection', function () {
 //     return view('selection');
 // });
