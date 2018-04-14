@@ -23,8 +23,17 @@ class VersionTest extends TestCase
     public function 一個version有多筆comments()
     {
     	$version = create('App\Version');
-    	$comment = create('App\Comment');
-
+    	$comment = create('App\Comment', ['version_id' => $version->id]);
+        
     	$this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $version->comments);
+    }
+
+    /** @test */
+    public function 一個version有多筆marks()
+    {
+        $version = create('App\Version');
+        $mark = create('App\Mark', ['version_id' => $version->id]);
+
+        $this->assertEquals(1, $version->marks->count());
     }
 }

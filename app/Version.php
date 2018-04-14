@@ -15,4 +15,9 @@ class Version extends Model
     {
     	return $this->hasMany(Comment::class);
     }
+
+    public function marks()
+    {
+    	return $this->hasMany(Mark::class);
+    }
 }

@@ -15,6 +15,11 @@ Route::post('replies/comments/{comment}', 'RepliesController@store')->name('repl
 Route::patch('replies/{reply}', 'RepliesController@update')->name('replies.update');
 Route::delete('replies/{reply}', 'RepliesController@destroy')->name('replies.destroy');
 
+Route::get('marks/versions/{version}', 'MarksController@index')->name('marks.index');
+Route::post('marks/versions/{version}', 'MarksController@store')->name('marks.store');
+Route::patch('marks/{mark}', 'MarksController@update')->name('marks.update');
+Route::delete('marks/{mark}', 'MarksController@destroy')->name('marks.destroy');
+
 // Route::get('/selection', function () {
 //     return view('selection');
 // });

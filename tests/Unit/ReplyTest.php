@@ -30,4 +30,16 @@ class ReplyTest extends TestCase
 
     	$this->assertInstanceOf(get_class($comment), $reply->repliable);
     }
+
+    /** @test */
+    public function 一則reply能夠歸屬於一則mark()
+    {
+        $mark = create('App\Mark');
+        $reply = create('App\Reply', [
+            'repliable_type' => get_class($mark),
+            'repliable_id' => $mark->id,
+        ]);
+
+        $this->assertInstanceOf(get_class($mark), $reply->repliable);
+    }
 }
