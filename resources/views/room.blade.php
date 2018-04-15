@@ -19,7 +19,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="col pr-0">
+  <div class="col p-0">
     <form action="#">
       <select name="rooms" id="rooms" class="custom-select">
         <option value="">MASTER BATH 5F</option>
@@ -31,7 +31,7 @@
 
 @section('activity')
 <div id="activity" class="row">
-  <div class="col pr-0">
+  <div class="col p-0">
     <div id="accordion">
       <div class="card">
         <div class="card-header" id="headingOne">
@@ -84,7 +84,7 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col p-0">
-          <div id="mapid" style="height:200px; width:100%;"></div>
+          <div id="mapid" style="height:200px; width:100%;" rel="1" ></div>
         </div>
     </div>
 </div>

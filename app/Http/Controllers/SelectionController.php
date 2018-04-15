@@ -28,7 +28,12 @@ class SelectionController extends Controller
 
     	$selections = $room->selections;
 
-    	return view('selection', compact('selections'))->with('room', $room);
+			if($room->selection > 0){
+				return redirect('/rooms/'.$room->id);
+			} else {
+				return view('selection', compact('selections'))->with('room', $room);
+			}
+
     }
 
     /**

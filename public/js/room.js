@@ -80,6 +80,23 @@ __webpack_require__(47);
 __webpack_require__(48);
 
 $(document).ready(function () {
+  // 取得comments 資料
+  var version_id = $("#mapid").attr('rel');
+  var url = "/comments/versions/";
+
+  $.ajax({
+    data: version_id,
+    dataType: 'json',
+    type: "GET",
+    url: url + version_id,
+    success: function success(data) {
+      console.log(data);
+    },
+    error: function error(data) {
+      console.log('Error:', data);
+    }
+  });
+
   // 設定leaflet 的高度
   var mapheight = $(window).height() - 45;
   $("#mapid").css('height', mapheight);
