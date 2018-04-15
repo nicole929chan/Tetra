@@ -28,12 +28,12 @@ class SelectionController extends Controller
 
     	$selections = $room->selections;
 
-    	return view('selection', compact('selections'));
+    	return view('selection', compact('selections'))->with('room', $room);
     }
 
     /**
      * store the selection submitted from user
-     * @param  Selection $selection 
+     * @param  Selection $selection
      * @return \Illuminate\Http\Response
      */
     public function store(Selection $selection)

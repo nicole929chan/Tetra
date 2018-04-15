@@ -15,7 +15,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="col pr-0">
+  <div class="col p-0">
     <form action="#">
       <select name="rooms" id="rooms" class="custom-select">
         <option value="">MASTER BATH 5F</option>
@@ -28,10 +28,10 @@
 @section('command')
 <div id="command" class="row">
   <div class="col pr-0 pl-0">
-    <button class="btn btn-primary btn-block">Download Image</button>
+    <a id="download" href="{{ asset('storage/' . $selections->first()->image_path) }}" class="btn btn-primary btn-block" Download>Download Image</a>
   </div>
   <div class="col pr-0 pl-0">
-    <button class="btn btn-danger btn-block">Submit Feedback</button>
+    <button id="feedback" class="btn btn-danger btn-block">Submit Feedback</button>
   </div>
 </div>
 @endsection
@@ -41,7 +41,7 @@
 <div class="container">
     <div class="row">
         <div class="col">
-          <img src="{{ asset('storage/' . $selections->shift()->image_path) }}" class="img-fluid">
+          <img id="main_img" src="{{ asset('storage/' . $selections->first()->image_path) }}" class="img-fluid" rel="{{$selections->first()->id}}">
         </div>
     </div>
 </div>
@@ -63,7 +63,9 @@
         <div class="row">
         @foreach ($selections->all() as $selection)
           <div class="col-3">
-            <img class="d-block w-100" src="{{ asset('storage/' . $selection->image_path) }}">
+            <a href="#" class="selections" rel="{{$selection->id}}">
+              <img class=" d-block w-100" src="{{ asset('storage/' . $selection->image_path) }}">
+            </a>
           </div>
         @endforeach
         </div>
@@ -72,7 +74,9 @@
         <div class="row">
           @foreach ($chunk as $selection)
             <div class="col-3">
-              <img class="d-block w-100" src="{{ asset('storage/' . $selection->image_path) }}">
+              <a href="#" class="selections" rel="{{$selection->id}}">
+                <img class=" d-block w-100" src="{{ asset('storage/' . $selection->image_path) }}">
+              </a>
             </div>
           @endforeach
         </div>
@@ -95,28 +99,5 @@
 @endsection
 
 @section('after_script')
-<script type="text/javascript">
-$(document).ready(function(){
-  var selection_height = 0;
-  //關閉底部
-  $("#view_select_off").click(function(event){
-    event.preventDefault();
-    selection_height = $("#view_select").height();
-    $("#view_select-open").css('display', 'block');
-    $("#view_select").stop(true).animate({height:0, opacity: '0'}, 'slow', function(){
-      $("#view_select").css('display', 'none');
-    });
-  });
-
-  //展開底部
-  $("#view_select_on").click(function(event){
-    event.preventDefault();
-    $("#view_select-open").css('display', 'none');
-    $("#view_select").css('display', 'block');
-    $("#view_select").stop(true).animate({height: selection_height, opacity: '1'}, 'slow', function(){
-    });
-  });
-
-});
-</script>
+<script src="{{ asset('js/selection.js') }}" defer></script>
 @endsection
