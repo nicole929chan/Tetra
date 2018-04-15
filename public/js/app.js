@@ -13899,6 +13899,11 @@ var app = new Vue({
 });
 
 $(document).ready(function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
 
   $("#sidebar-arrow").click(function () {
     $("#sidebar-open").css('display', 'block');

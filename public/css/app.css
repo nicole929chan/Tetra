@@ -10095,3 +10095,7 @@ a.text-dark:focus {
   background-color: #ffffff;
 }
 
+#download {
+  line-height: 31px;
+}
+
