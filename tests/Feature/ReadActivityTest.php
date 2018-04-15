@@ -35,19 +35,19 @@ class ReadActivityTest extends TestCase
     	$this->initProject();
 
     	$mark2 = create('App\Mark', ['version_id' => $this->version->id]);
-    	$mark2->created_at = Carbon::now()->addDays(1);
+    	$mark2->created_at = Carbon::now()->addDays(3);
     	$mark2->save();
 
-    	$this->comment->created_at = Carbon::now()->addDays(2);
+    	$this->comment->created_at = Carbon::now()->addDays(1);
     	$this->comment->save();
 
-    	$this->mark->created_at = Carbon::now()->addDays(3);
+    	$this->mark->created_at = Carbon::now()->addDays(2);
     	$this->mark->save();
 
     	$response = $this->json('GET', route('activities.index', [$this->version->id]))->json();
 
     	$this->assertEquals(
-    		[$mark2->creator_id, $this->comment->creator_id, $this->mark->creator_id], 
+    		[$mark2->creator_id, $this->mark->creator_id, $this->comment->creator_id], 
     		array_column($response, "creator_id")
     	);
     }

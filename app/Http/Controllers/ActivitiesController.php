@@ -19,7 +19,7 @@ class ActivitiesController extends Controller
     	$marks = $version->marks;
     	$comments = $version->comments;
 
-    	$activities = $marks->concat($comments)->sortBy('created_at');
+    	$activities = $marks->concat($comments)->sortByDesc('created_at');
 
     	if (request()->expectsJson()) return $activities;
     }
