@@ -3,6 +3,9 @@ Route::get('project', function () {
 	return 'project list page';
 })->name('projects.index');
 
+Route::get('rooms/{room}/{version}', 'RoomsController@show')->name('rooms.show.version');
+Route::get('rooms/{room}', 'RoomsController@show')->name('rooms.show');
+
 Route::get('rooms/{room}/selections', 'SelectionController@index')->name('selection.index');
 Route::post('rooms/selections/{selection}', 'SelectionController@store')->name('selection.store');
 
