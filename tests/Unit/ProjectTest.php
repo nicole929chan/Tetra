@@ -28,4 +28,13 @@ class ProjectTest extends TestCase
 
     	$this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $project->users);
     }
+
+    /** @test */
+    public function 一個project有多個rooms()
+    {
+        $project = create('App\Project');
+        create('App\Room', ['project_id' => $project->id], 2);
+
+        $this->assertEquals(2, $project->rooms->count());
+    }
 }

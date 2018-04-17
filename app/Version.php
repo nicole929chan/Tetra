@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Version extends Model
 {
+    protected $casts = [
+        'active' => 'boolean'
+    ];
+
     public function room()
     {
     	return $this->belongsTo(Room::class);
