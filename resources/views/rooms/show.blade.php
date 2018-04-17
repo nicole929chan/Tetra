@@ -9,9 +9,9 @@
   <div class="col-10 media">
     <img src="https://dummyimage.com/80/828187/ffffff.jpg&text=MNS" class="rounded-circle align-self-center mr-3 ml-3" alt="">
     <div class="media-body align-self-center">
-      {{ $room->project->address }}<br>
-      {{ $room->project->city }}<br>
-      {{ $room->project->country }}
+      {{ $project->address }}<br>
+      {{ $project->city }}<br>
+      {{ $project->country }}
     </div>
   </div>
   <div class="col-2">
@@ -21,9 +21,7 @@
 <div class="row">
   <div class="col pr-0">
     <form action="#">
-      <select name="rooms" id="rooms" class="custom-select">
-        <option value="">{{ $room->name }}</option>
-      </select>
+      @include('rooms.rooms', ['project' => $project, 'room' => $room])
     </form>
   </div>
 </div>
@@ -43,10 +41,7 @@
         </div>
         <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
           <div class="card-body">
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            ajax 讀取 marks, comments, replies (ActivitiesController)
           </div>
         </div>
       </div>
@@ -60,7 +55,7 @@
         </div>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
           <div class="card-body">
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            ajax 讀取 files (ActivitiesController)
           </div>
         </div>
       </div>
@@ -75,7 +70,13 @@
     <button class="btn btn-primary btn-block">Download Image</button>
   </div>
   <div class="col pr-0 pl-0">
-    <button class="btn btn-danger btn-block">Submit Feedback</button>
+    <form method="POST" action="{{ action('RoomsController@store', [$room->id]) }}">
+      {{ csrf_field() }}
+      <input type="hidden" name="version_id" value="{{ $version->id }}">
+      <button type="submit" class="btn btn-danger btn-block" 
+        @if (!$version->active) disabled @endif
+      >Submit Feedback</button>
+     </form>
   </div>
 </div>
 @endsection
@@ -95,17 +96,7 @@
 <div class="row fixed-bottom justify-content-center">
   <div class="col-8 offset-2">
     <ul id="bottom-tool">
-      @foreach ($room->versions as $key => $value)
-        <li class="m-0 @if($value->id == $version->id) active @endif ">
-          <div style="padding: 5px 10px;">
-            <div class="float-left mr-3">
-              <div style="font-size:10px;">{{ $value->created_at->format('Y-m-d') }}</div>
-              <div>VERSION</div>
-            </div>
-            <div class="version">{{ $key+1 }}</div>
-          </div>
-      </li>
-      @endforeach
+      @include('rooms.versions', ['room' => $room, 'version' => $version])
       <li class="m-0">
         <div style="padding: 5px 10px;">
           <div class="float-left mr-3">

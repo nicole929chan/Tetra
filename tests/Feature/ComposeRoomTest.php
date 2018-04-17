@@ -17,16 +17,28 @@ class ComposeRoomTest extends TestCase
     protected $version;
 
     /** @test */
-    public function 已經登入的使用者進入自己專屬的room應該要指定要看的version()
+    public function 已經登入的使用者不能夠進入不屬於自己的room瀏覽()
+    {
+        $this->initProject();
+        auth()->logout();
+
+        $this->signIn($user = create('App\User'));
+
+        $this->get(route('rooms.show', [$this->room->id, $this->version->id]))->assertStatus(403);
+    }
+
+
+    /** @test */
+    public function 已經登入的使用者能夠進入room瀏覽version內容()
     {
         $this->initProject();
 
-        $this->get(route('rooms.show.version', [$this->room->id, $this->version->id]))
+        $this->get(route('rooms.show', [$this->room->id, $this->version->id]))
             ->assertSee($this->room->name);
     }
 
     /** @test */
-    public function 已經登入的使用者進入room如果沒有指定version就採用當前作業中的()
+    public function 已經登入的使用者進入room如果沒帶version就採用當前作業中的()
     {
         $this->initProject();
 
@@ -35,8 +47,35 @@ class ComposeRoomTest extends TestCase
             'image_path' => 'files/'.$this->project->id.'/versions/myVersion.png'
         ]);
 
-        $this->get(route('rooms.show', [$this->room->id]))
+        $this->room->version = $version->id;
+        $this->room->save();
+
+        $this->get(route('rooms.show.default', [$this->room->id]))
             ->assertSee($this->room->name);
+    }
+
+    /** @test */
+    public function 已經登入的使用者進入room後不可以submi不是自己的version()
+    {
+        $this->initProject();
+        auth()->logout();
+
+        $this->signIn($user = create('App\User'));
+
+        $this->post(route('rooms.store', [$this->room->id]), ['version_id' => $this->version->id])
+            ->assertStatus(403);
+    }
+
+    /** @test */
+    public function 已經登入的使用者進入room後可以submit當前version內容()
+    {
+        $this->initProject();
+
+        $this->assertTrue($this->version->active);
+
+        $this->json('POST', route('rooms.store', [$this->room->id]), ['version_id' => $this->version->id]);
+
+        $this->assertFalse($this->version->fresh()->active);
     }
 
     protected function initProject()
