@@ -11,7 +11,7 @@ $factory->define(App\Mark::class, function (Faker $faker) {
         	return factory(App\Version::class)->create()->id;
         },
         'body' => $faker->sentence,
-        'lat' => $faker->randomFloat(),
-        'lng' => $faker->randomFloat()
+        'lat' => $faker->randomFloat(6, 0, 999),
+        'lng' => $faker->randomFloat(6, 0, 999)
     ];
 });
