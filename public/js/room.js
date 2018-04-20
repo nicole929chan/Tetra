@@ -134,8 +134,10 @@ $(document).ready(function () {
     var type = e.layerType,
         layer = e.layer;
 
-    // 可以在此處將圖層座標寫入DB
+    console.log(layer);
     mymap.addLayer(layer);
+
+    layer.bindPopup('Hello');
   });
 
   // 設定 activity 高度
