@@ -43,37 +43,7 @@
         </div>
         <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
           <div class="card-body">
-            <div class="topic">
-              <div class="comment" style="border-color:blue;">
-                <h4>Nova Concepts</h4>
-                <p>Hi MNS, we still a meterial sample for the kitchen floor.</p>
-                <div><a href="#">reply</a></div>
-              </div>
-              <ul class="reply">
-                <li style="border-color:red;">
-                  <h4>Katie</h4>
-                  <p>OK</p>
-                </li>
-                <li style="border-color:blue;">
-                  <h4>Nova Concepts</h4>
-                  <p>Thanks.</p>
-                </li>
-              </ul>
-            </div>
-            <div class="topic">
-              <div class="comment" style="border-color:red;">
-                <h4>Katie</h4>
-                <p>Can we remove the desk.</p>
-                <div><a href="#">reply</a></div>
-              </div>
-              <ul class="reply">
-                <li style="border-color:blue;">
-                  <h4>Nova</h4>
-                  <p>OK</p>
-                </li>
-              </ul>
-            </div>
-
+        
           </div>
         </div>
       </div>

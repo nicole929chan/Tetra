@@ -13,6 +13,16 @@ $(document).ready(function(){
     url: url + version_id,
     success: function (data) {
       console.log(data);
+      data.forEach(function(comment){
+        var topic = '<div class="topic m-1">';
+        topic += '<div class="comment" style="border-color:red;">';
+        topic += '<h4>Katie</h4>';
+        topic += '<p>' + comment.body + '</p>';
+        topic += '<div><a href="#">reply</a></div>';
+        topic += '</div>';
+        topic += '</div>';
+        $("#collapseOne").children(".card-body").append(topic);
+      });
     },
     error: function (data) {
       console.log('Error:', data);
@@ -80,6 +90,8 @@ $(document).ready(function(){
   var height = $(window).height() - 205;
   $("#activity").css('max-height', height);
   $("#activity").css('min-height', height);
+  $("#collapseOne").children(".card-body").css('max-height', height-105);
+  $("#collapseTwo").children(".card-body").css('max-height', height-105);
 
   //關閉底部
   var selection_height = 0;
