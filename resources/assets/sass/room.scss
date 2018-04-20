@@ -1,3 +1,20 @@
 @import "~leaflet/dist/leaflet.css";
 
-@import "~leaflet-draw/dist/leaflet.draw.css"
+@import "~leaflet-draw/dist/leaflet.draw.css";
+
+.comment {
+  border-left: 3px solid;
+  padding: 0 10px;
+}
+
+.reply {
+  list-style: none;
+  margin: 20px;
+  padding: 0px;
+}
+
+.reply li {
+  display: block;
+  border-left: 3px solid;
+  padding: 0 10px;
+}

@@ -36,7 +36,7 @@ $(document).ready(function(){
           url: url + main_img,
           success: function (data) {
             console.log(data);
-            alert(data.messeage);
+            alert(data.message);
           },
           error: function (data) {
             console.log('Error:', data);

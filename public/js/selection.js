@@ -113,7 +113,7 @@ $(document).ready(function () {
       url: url + main_img,
       success: function success(data) {
         console.log(data);
-        alert(data.messeage);
+        alert(data.message);
       },
       error: function error(data) {
         console.log('Error:', data);
