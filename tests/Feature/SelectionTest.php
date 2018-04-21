@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class SelectionTest extends TestCase
 {
@@ -56,6 +57,19 @@ class SelectionTest extends TestCase
     }
 
     /** @test */
+    public function submit_selection_並須更新selection的時間戳記()
+    {
+        $this->authorization();
+
+        $this->selection->updated_at = $updated_at = Carbon::now()->subDay(1);
+        $this->selection->save();
+
+        $this->post(route('selection.store', [$this->selection->id]));
+
+        $this->assertGreaterThan($updated_at, $this->selection->fresh()->updated_at);
+    }
+
+    /** @test */
     public function 已經登入的使用者並不能夠submit不是自己專屬project的selection()
     {
         $this->signIn($user = create('App\User'));
@@ -84,6 +98,33 @@ class SelectionTest extends TestCase
         $this->room->save();
 
         $this->post(route('selection.store', [$this->selection->id]))->assertStatus(403);
+    }
+
+    /** @test */
+    public function 已經登入的使用者只能夠瀏覽屬於自己專案所submit的selection()
+    {
+        $this->authorization();
+        auth()->logout();
+
+        $this->signIn($user = create('App\User'));
+
+        $this->room->selection = $this->selection->id;
+        $this->room->status = '1';
+        $this->room->save();
+
+        $this->get(route('selection.show', [$this->room->id]))->assertStatus(403);
+    }
+
+    /** @test */
+    public function 已經登入的使用者能夠瀏覽已經submit的selection()
+    {
+        $this->authorization();
+
+        $this->room->selection = $this->selection->id;
+        $this->room->status = '1';
+        $this->room->save();
+
+        $this->get(route('selection.show', [$this->room->id]))->assertStatus(200);
     }
 
     protected function authorization()
