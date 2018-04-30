@@ -9,8 +9,8 @@ class ActivitiesController extends Controller
 {
 	/**
 	 * mark and comment list
-	 * @param  Version $version 
-	 * @return json           
+	 * @param  Version $version
+	 * @return json
 	 */
     public function index(Version $version)
     {

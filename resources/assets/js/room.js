@@ -3,7 +3,7 @@ require('leaflet-draw');
 
 $(document).ready(function(){
   // 取得comments 資料
-  var version_id = $("#mapid").attr('rel');
+  var version_id = $("#version_id").val();
   var url = "/comments/versions/";
 
   $.ajax({
@@ -12,12 +12,13 @@ $(document).ready(function(){
     type: "GET",
     url: url + version_id,
     success: function (data) {
-      console.log(data);
-      data.forEach(function(comment){
+      var activities = Object.keys(data).map(function (key) { return data[key]; });
+      console.log(activities);
+      activities.forEach(function(activity){
         var topic = '<div class="topic m-1">';
         topic += '<div class="comment" style="border-color:red;">';
         topic += '<h4>Katie</h4>';
-        topic += '<p>' + comment.body + '</p>';
+        topic += '<p>' + activity.body + '</p>';
         topic += '<div><a href="#">reply</a></div>';
         topic += '</div>';
         topic += '</div>';
@@ -77,15 +78,45 @@ $(document).ready(function(){
   });
   mymap.addControl(drawControl);
 
+  $.ajax({
+    dataType: 'json',
+    type: "GET",
+    url: "/marks/versions/" + version_id,
+    success: function (data) {
+      console.log('Success:', data);
+      data.forEach(function(element){
+          L.geoJSON(JSON.parse(element.l_object)).addTo(mymap);
+      });
+    },
+    error: function (data) {
+      console.log('Error:', data);
+    }
+  });
+
   // 當繪製圖層完成後需要將圖層置入leaflet
   mymap.on(L.Draw.Event.CREATED, function (e) {
-     var type = e.layerType,
+    var type = e.layerType,
          layer = e.layer;
 
-     console.log(layer);
-     mymap.addLayer(layer);
+    var LatLngs = JSON.stringify(layer.toGeoJSON());
 
-     layer.bindPopup('Hello');
+    mymap.addLayer(layer);
+
+    var datastring = "lat=1&lng=1&body=TEST&l_object=" + LatLngs;
+    $.ajax({
+      data: datastring,
+      dataType: 'json',
+      type: "POST",
+      url: "/marks/versions/" + version_id,
+      success: function (data) {
+        console.log('Success:', data);
+      },
+      error: function (data) {
+        console.log('Error:', data);
+      }
+    });
+
+    layer.bindPopup('Hello');
   });
 
   // 設定 activity 高度
@@ -111,7 +142,7 @@ $(document).ready(function(){
   $("#view_select_on").click(function(event){
     event.preventDefault();
     $("#view_select-open").css('display', 'none');
-    $("#bottom-tool").css('display', 'block');
+    $("#bottom-tool").css('display', 'table');
     $("#bottom-tool").stop(true).animate({height: selection_height, opacity: '1'}, 'slow', function(){
     });
   });
