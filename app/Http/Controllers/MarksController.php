@@ -11,8 +11,8 @@ class MarksController extends Controller
 {
 	/**
 	 * mark list
-	 * @param  Version $version 
-	 * @return json           
+	 * @param  Version $version
+	 * @return json
 	 */
     public function index(Version $version)
     {
@@ -25,9 +25,9 @@ class MarksController extends Controller
 
     /**
      * store a mark
-     * @param  Request $request 
-     * @param  Version $version 
-     * @return json       
+     * @param  Request $request
+     * @param  Version $version
+     * @return json
      */
     public function store(Request $request, Version $version)
     {
@@ -35,6 +35,7 @@ class MarksController extends Controller
 
     	$request->validate([
     		'body' => 'required',
+        'l_object' => 'required',
     		'lat' => 'required',
     		'lng' => 'required',
     	]);
@@ -42,6 +43,7 @@ class MarksController extends Controller
     	$mark = $version->marks()->create([
     		'creator_id' => auth()->id(),
     		'body' => $request->body,
+        'l_object' => $request->l_object,
     		'lat' => $request->lat,
     		'lng' => $request->lng
     	]);
@@ -59,9 +61,9 @@ class MarksController extends Controller
 
     /**
      * update a mark
-     * @param  Request $request 
-     * @param  Mark    $mark    
-     * @return json           
+     * @param  Request $request
+     * @param  Mark    $mark
+     * @return json
      */
     public function update(Request $request, Mark $mark)
     {
@@ -77,8 +79,8 @@ class MarksController extends Controller
 
     /**
      * destroy a mark
-     * @param  Mark   $mark 
-     * @return json       
+     * @param  Mark   $mark
+     * @return json
      */
     public function destroy(Mark $mark)
     {

@@ -19,7 +19,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="col pr-0">
+  <div class="col p-0">
     <form action="#">
       @include('rooms.rooms', ['project' => $project, 'room' => $room])
     </form>
@@ -29,7 +29,7 @@
 
 @section('activity')
 <div id="activity" class="row">
-  <div class="col pr-0">
+  <div class="col p-0">
     <div id="accordion">
       <div class="card">
         <div class="card-header" id="headingOne">
@@ -41,7 +41,7 @@
         </div>
         <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
           <div class="card-body">
-            ajax 讀取 marks, comments, replies (ActivitiesController)
+
           </div>
         </div>
       </div>
@@ -72,8 +72,8 @@
   <div class="col pr-0 pl-0">
     <form method="POST" action="{{ action('RoomsController@store', [$room->id]) }}">
       {{ csrf_field() }}
-      <input type="hidden" name="version_id" value="{{ $version->id }}">
-      <button type="submit" class="btn btn-danger btn-block" 
+      <input type="hidden" id="version_id" name="version_id" value="{{ $version->id }}">
+      <button type="submit" class="btn btn-danger btn-block"
         @if (!$version->active) disabled @endif
       >Submit Feedback</button>
      </form>
@@ -94,8 +94,8 @@
 @section('bottom')
 
 <div class="row fixed-bottom justify-content-center">
-  <div class="col-8 offset-2">
-    <ul id="bottom-tool">
+  <div class="col-8">
+    <ul id="bottom-tool" class="text-center">
       @include('rooms.versions', ['room' => $room, 'version' => $version])
       <li class="m-0">
         <div style="padding: 5px 10px;">
