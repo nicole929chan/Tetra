@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Room;
 use App\Selection;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
@@ -37,6 +38,24 @@ class SelectionController extends Controller
     }
 
     /**
+     * display the selection that user submitted
+     * @param  Room   $room 
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Room $room)
+    {
+        $this->authorize('view', $room);
+
+        $project = $room->project;
+        $selection = $room->selection();
+
+        if (request()->expectsJson()) 
+            return ['project' => $project, 'room' => $room, 'selection' => $selection];
+
+        return view('selections.show', compact('project', 'room', 'selection'));
+    }
+
+    /**
      * store the selection submitted from user
      * @param  Selection $selection
      * @return \Illuminate\Http\Response
@@ -53,6 +72,9 @@ class SelectionController extends Controller
             'selection' => $selection->id,
             'status' => '1'
         ]);
+
+        $selection->updated_at = Carbon::now();
+        $selection->save();
 
         if (request()->expectsJson()) return ['message' => 'The selection has been submitted.', 'room' => $room];
 

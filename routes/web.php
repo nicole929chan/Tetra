@@ -8,6 +8,7 @@ Route::get('rooms/{room}', 'RoomsController@show')->name('rooms.show.default');
 Route::post('rooms/{room}', 'RoomsController@store')->name('rooms.store');
 
 Route::get('rooms/{room}/selections', 'SelectionController@index')->name('selection.index');
+Route::get('rooms/{room}/selection', 'SelectionController@show')->name('selection.show');
 Route::post('rooms/selections/{selection}', 'SelectionController@store')->name('selection.store');
 
 Route::get('comments/versions/{version}', 'CommentsController@index')->name('comments.index');

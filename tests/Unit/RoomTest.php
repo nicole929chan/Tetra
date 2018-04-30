@@ -36,4 +36,16 @@ class RoomTest extends TestCase
 
         $this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $room->versions);
     }
+
+    /** @test */
+    public function room能夠取得已經選擇的selection()
+    {
+        $room = create('App\Room');
+        $selectionId = create('App\Selection', ['room_id' => $room->id])->id;
+
+        $room->selection = $selectionId;
+        $room->save();
+
+        $this->assertInstanceOf('App\Selection', $room->selection());
+    }
 }

@@ -27,56 +27,13 @@
 </div>
 @endsection
 
-@section('activity')
-<div id="activity" class="row">
-  <div class="col pr-0">
-    <div id="accordion">
-      <div class="card">
-        <div class="card-header" id="headingOne">
-          <h5 class="mb-0">
-            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              Activity
-            </button>
-          </h5>
-        </div>
-        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-          <div class="card-body">
-            ajax 讀取 marks, comments, replies (ActivitiesController)
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header" id="headingTwo">
-          <h5 class="mb-0">
-            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-              Files
-            </button>
-          </h5>
-        </div>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-          <div class="card-body">
-            ajax 讀取 files (ActivitiesController)
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-@endsection
-
 @section('command')
 <div id="command" class="row">
   <div class="col pr-0 pl-0">
     <button class="btn btn-primary btn-block">Download Image</button>
   </div>
   <div class="col pr-0 pl-0">
-    <form method="POST" action="{{ action('RoomsController@store', [$room->id]) }}">
-      {{ csrf_field() }}
-      <input type="hidden" name="version_id" value="{{ $version->id }}">
-      <button type="submit" class="btn btn-danger btn-block" 
-        @if (!$version->active) disabled @endif
-      >Submit Feedback</button>
-     </form>
+    <button type="submit" class="btn btn-secondary btn-block" disabled>Submit Feedback</button>
   </div>
 </div>
 @endsection
@@ -96,15 +53,13 @@
 <div class="row fixed-bottom justify-content-center">
   <div class="col-8 offset-2">
     <ul id="bottom-tool">
-      @include('rooms.versions', ['room' => $room, 'version' => $version])
-      <li class="m-0">
+      @include('rooms.versions', ['room' => $room, 'version' => null])
+      <li class="m-0 active">
         <div style="padding: 5px 10px;">
-          <a href="#">
-            <div class="float-left mr-3">
-              <div style="font-size:10px;">12 Dec 2017</div>
-              <div>View selection</div>
-            </div>
-          </a>
+          <div class="float-left mr-3">
+            <div style="font-size:10px;">{{ $selection->updated_at->format('Y-m-d') }}</div>
+            <div>View selection</div>
+          </div>
         </div>
       </li>
       <li class="m-0">

@@ -62,6 +62,18 @@ class ComposeMarkTest extends TestCase
     }
 
     /** @test */
+    public function 瀏覽marks一併把它的creator帶出來()
+    {
+        $this->initProject();
+
+        $response = $this->json('GET', route('marks.index', [$this->version->id]))->json();
+
+        $data = array_column($response, "creator");
+
+        $this->assertEquals($this->mark->creator->name, $data[0]['name']);
+    }
+
+    /** @test */
     public function 已經登入的使用者不能夠瀏覽不是自己專案內的marks()
     {
     	$this->initProject();

@@ -48,6 +48,18 @@ class ComposeCommentTest extends TestCase
     }
 
     /** @test */
+    public function 瀏覽comments一併把它的creator帶出來()
+    {
+        $this->initProject();
+
+        $response = $this->json('GET', route('comments.index', [$this->version->id]))->json();
+
+        $data = array_column($response, "creator");
+
+        $this->assertEquals($this->comment->creator->name, $data[0]['name']);
+    }
+
+    /** @test */
     public function 瀏覽的comments必須以新增的時間戳記降冪排序()
     {
     	$this->initProject();

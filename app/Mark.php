@@ -8,7 +8,7 @@ class Mark extends Model
 {
     protected $guarded = [];
     
-    protected $with = ['replies'];
+    protected $with = ['replies', 'creator:id,name'];
 
     public function version()
     {
