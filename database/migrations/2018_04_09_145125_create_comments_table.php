@@ -19,6 +19,7 @@ class CreateCommentsTable extends Migration
             $table->integer('version_id');
             $table->text('body');
             $table->string('file_path')->nullable();
+            $table->string('type')->default('Comment');
             $table->timestamps();
         });
     }
