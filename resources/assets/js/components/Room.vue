@@ -1,6 +1,6 @@
 <template>
-    <div class="container">
-        <activities :activities="activities"></activities>
+    <div class="container-fluid">
+        <activities :activities="activities" :version="version"></activities>
     </div>
 </template>
 

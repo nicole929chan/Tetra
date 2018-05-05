@@ -1,7 +1,10 @@
 <template>
 	<div class="topic m-1">
 	    <div class="comment" style="border-left: 2px solid red;">
-	    	<h4>{{ activity.creator.name }}</h4>
+	        <div class="d-flex justify-content-between">
+	    		<h4>{{ activity.creator.name }}</h4>
+	    		<div>{{ activity.updated_at }}</div>
+	        </div>
 	    	<p>
 				{{ activity.body }}
 	    	</p>
