@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
@@ -9,7 +10,7 @@ class Comment extends Model
 	protected $guarded = [];
 
     protected $with = ['replies', 'creator:id,name'];
-	
+
     public function version()
     {
     	return $this->belongsTo(Version::class);
@@ -22,6 +23,7 @@ class Comment extends Model
 
     public function replies()
     {
-        return $this->morphMany(Reply::class, 'repliable');
+        return $this->morphMany(Reply::class, 'repliable')->orderBy('id', 'desc');
     }
+
 }

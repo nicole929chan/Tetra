@@ -31,14 +31,14 @@ class MarksController extends Controller
      */
     public function store(Request $request, Version $version)
     {
-    	$this->authorize('update', $version->room);
+        $this->authorize('update', $version->room);
 
-    	$request->validate([
-    		'body' => 'required',
+        $request->validate([
+            'body' => 'required',
         'l_object' => 'required',
-    		'lat' => 'required',
-    		'lng' => 'required',
-    	]);
+            'lat' => 'required',
+            'lng' => 'required',
+        ]);
 
     	$mark = $version->marks()->create([
     		'creator_id' => auth()->id(),

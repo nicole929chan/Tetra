@@ -20,7 +20,9 @@ class CreateMarksTable extends Migration
             $table->text('body');
             $table->decimal('lat')->nullable();
             $table->decimal('lng')->nullable();
+            $table->string('l_object')->nullable();
             $table->string('file_path')->nullable();
+            $table->string('type')->default('Mark');
             $table->timestamps();
         });
     }
