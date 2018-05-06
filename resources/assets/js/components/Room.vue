@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid">
-        <activities :activities="activities" :version="version"></activities>
+        <activities :version="version"></activities>
     </div>
 </template>
 
@@ -12,26 +12,5 @@
     		Activities
     	},
         props: ['room', 'version', 'project'],
-        data () {
-        	return {
-        		activities: null
-        	}
-        },
-        mounted() {
-            this.initData()
-        },
-        methods: {
-        	initData() {
-        		let end_point = '/activities/versions/' + this.version.id
-
-        		axios({
-        			url: end_point,
-        			method: 'get',
-        			baseURL: axios.defaults.baseURL
-        		}).then(response => {
-    		    	this.activities = response.data
-    		    })
-        	}
-        }
     }
 </script>

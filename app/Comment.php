@@ -26,8 +26,4 @@ class Comment extends Model
         return $this->morphMany(Reply::class, 'repliable');
     }
 
-    public function getUpdatedAtAttribute($value)
-    {
-        return Carbon::parse($this->attributes['updated_at'])->diffForHumans();
-    }
 }

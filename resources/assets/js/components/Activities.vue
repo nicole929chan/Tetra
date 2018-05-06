@@ -20,6 +20,7 @@
 	              v-for="activity, index in activities"
 	              :key="activity.id"
 	              :activity="activity"
+	              @destroyActivity="destroyActivity(activity.id, activity.type)"
 	            ></activity>
 	          </div>
 	        </div>
@@ -38,6 +39,9 @@
 	          </div>
 	        </div>
 	      </div>
+	      <div class="card">
+	      	<button class="btn btn-sm btn-success">Add Comment</button>
+	      </div>
 	    </div>
 	  </div>
 	</div>
@@ -53,6 +57,47 @@
 		components: {
 			Activity, Leaflet
 		},
-		props: ['activities', 'version']
+		props: ['version'],
+		data () {
+			return {
+				activities: null
+			}
+		},
+		mounted() {
+            this.initData()
+        },
+		methods: {
+			initData() {
+        		let end_point = '/activities/versions/' + this.version.id
+
+        		axios({
+        			url: end_point,
+        			method: 'get',
+        			baseURL: axios.defaults.baseURL
+        		}).then(response => {
+    		    	this.activities = response.data
+    		    })
+        	},
+
+			destroyActivity (activityId, activityType) {
+				let end_point = axios.defaults.baseURL
+
+				end_point += (activityType == 'Mark') ? `/marks/${activityId}` : `/comments/${activityId}`
+				
+				axios.delete(end_point)
+				    .then(response => {
+				    	this.activities = this.activities.filter((activity) => {
+				    		if (activity.id == activityId && activity.type == activityType) {
+				    			return false
+				    		} else {
+				    			return true
+				    		}
+				    	})
+				    })
+				    .catch(error => {
+				    	console.log(error)
+				    })
+			}
+		}
 	}
 </script>

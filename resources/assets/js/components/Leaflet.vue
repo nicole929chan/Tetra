@@ -15,10 +15,10 @@
     export default {
     	props: ['version'],
     	mounted () {
-    		this.initLeaflet ()
+    		this.initLeaflet (this.version.id)
     	},
     	methods: {
-    		initLeaflet () {
+    		initLeaflet (versionId) {
     			// 設定leaflet 的高度
 				var mapheight = $(window).height() - 45;
 				$("#mapid").css('height', mapheight);
@@ -67,9 +67,47 @@
 				});
 				mymap.addControl(drawControl);
 
+				// 當繪製圖層完成後需要將圖層置入leaflet
+			    mymap.on(L.Draw.Event.CREATED, function (e) {
+			    	console.log(e)
+				    var type = e.layerType, layer = e.layer;
+
+				    var LatLngs = JSON.stringify(layer.toGeoJSON());
+
+				    mymap.addLayer(layer);
+
+				    // let end_point = axios.defaults.baseURL + `/marks/versions/${versionId}`;
+
+				    // axios.post(end_point, {
+				    // 	    body: 'test',
+				    // 	    l_object: LatLngs,
+				    // 	    lat: 1,
+				    // 	    lng: 1
+				    //     })
+				    //     .then(response => {
+				    //     	console.log(response)
+				    //     })
+				    //     .catch(error => {
+				    //     	console.log(error)
+				    //     })
+				    
+				    let form = '<form id="form-mark" name="form-mark">'
+				    form += '<textarea name="body" rows="5"></textarea>'
+				    form += '<div><button name="submit">submit</button></div>'
+				    form += '</form>'
+
+				    // form += '<div><button>a button</button></div>'
+				    
+				    layer.bindPopup(form);
+
+				});
+
+				
 
 
     		}
+
+
     	}
     }
 </script>

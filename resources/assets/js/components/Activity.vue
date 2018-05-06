@@ -3,15 +3,19 @@
 	    <div class="comment" style="border-left: 2px solid red;">
 	        <div class="d-flex justify-content-between">
 	    		<h4>{{ activity.creator.name }}</h4>
-	    		<div>{{ activity.updated_at }}</div>
+	    		<div v-text="ago"></div>
 	        </div>
-	    	<p>
-				{{ activity.body }}
-	    	</p>
-	    	<reply
-	    	  v-for="reply, index in activity.replies"
-	    	  :key="reply.id"
-	    	  :reply="reply"
+	        <div class="d-flex justify-content-between">
+		    	<p>
+					{{ activity.body }}
+		    	</p>
+		    	<button class="btn btn-sm btn-outline-danger" @click="destroy">del</button>
+		    </div>
+		    <reply
+	    	    v-for="reply, index in activity.replies"
+	    	    :key="reply.id"
+	    	    :reply="reply"
+	    	    @destroyReply="destroyReply(reply.id)"
 	    	></reply>
 	    </div>
 	</div>
@@ -20,12 +24,36 @@
 
 <script>
     import Reply from './Reply';
+    import moment from 'moment';
 
     export default {
     	components: {
     		Reply
     	},
-    	props: ['activity']
+    	props: ['activity'],
+    	computed:{
+    		ago () {
+    			return moment(this.activity.updated_at).fromNow()
+    		}
+    	},
+    	methods: {
+    		destroyReply (replyId) {
+    			let end_point = axios.defaults.baseURL + `/replies/${replyId}`
+
+    			axios.delete(end_point)
+    			    .then(response => {
+    			    	this.activity.replies = this.activity.replies.filter((reply) => {
+    			    		return reply.id != replyId
+    			    	})
+    			    })
+    			    .catch(error => {
+    			    	console.log(error)
+    			    })
+    		},
+    		destroy () {
+    			this.$emit('destroyActivity')
+    		}
+    	}
     	
     }
 </script>
