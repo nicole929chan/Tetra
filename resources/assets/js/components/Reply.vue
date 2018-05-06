@@ -1,30 +1,25 @@
 <template>
-  <div>
-  	<div v-if="reply">
-    	<a href="#" @click.prevent="toggle">reply</a>
-  	</div>
-  	<div v-if="show">
-      <div class="d-flex justify-content-between">
-  		  <div><strong>{{ reply.owner.name }}</strong></div>
-        <div v-text="ago"></div>
+	<div class="ml-2">
+    <div class="d-flex justify-content-between">
+		  <div><strong>{{ reply.owner.name }}</strong></div>
+      <div v-text="ago"></div>
+    </div>
+    <p v-if="!editable">
+      {{ form.body }}
+    </p>
+    <div v-else class="form-group">
+      <textarea rows="5" v-model="form.body" class="form-control"></textarea>
+    </div>
+    <div v-if="errors"><small v-text="errors.body[0]"></small></div>
+    <div class="d-flex justify-content-end">
+      <div class="d-flex" v-if="canUpdate">
+        <button class="btn btn-sm btn-outline-info" @click="edit" v-if="!editable">edit</button>
+        <button class="btn btn-sm btn-outline-danger" @click="destroy" v-if="!editable">del</button>
+        <button class="btn btn-sm btn-outline-info" @click="cancel" v-if="editable">cancel</button>
+        <button class="btn btn-sm btn-outline-success" @click="save" v-if="editable">save</button>
       </div>
-      <div class="d-flex justify-content-between">
-        <p v-if="!editable">
-          {{ form.body }}
-        </p>
-        <p v-else>
-          <textarea rows="5" v-model="form.body"></textarea>
-        </p>
-        <div v-if="errors"><small v-text="errors.body[0]"></small></div>
-        <div class="d-flex">
-          <button class="btn btn-sm btn-outline-info" @click="edit" v-if="!editable">edit</button>
-          <button class="btn btn-sm btn-outline-danger" @click="destroy" v-if="!editable">del</button>
-          <button class="btn btn-sm btn-outline-info" @click="cancel" v-if="editable">cancel</button>
-          <button class="btn btn-sm btn-outline-success" @click="save" v-if="editable">save</button>
-        </div>
-      </div>
-  	</div>
-  </div>
+    </div>
+	</div>
 </template>
 
 <script>
@@ -34,7 +29,6 @@
     	props: ['reply'],
     	data () {
     		return {
-    			show: false,
           editable: false,
           form: {
             body: this.reply.body
@@ -46,6 +40,9 @@
       computed: {
         ago () {
           return moment(this.reply.updated_at).fromNow()
+        },
+        canUpdate () {
+          return this.reply.owner.id == window.App.user.id
         }
       },
     	methods: {
@@ -66,15 +63,15 @@
               // console.log(response)
               this.currentBody = this.form.body
               this.editable = false
+              this.errors = null
             })
             .catch(error => {
               this.errors = error.response.data.errors
             })
-
-            
         },
         cancel() {
           this.form.body = this.currentBody
+          this.errors = null
           this.editable = false
         }
     	}

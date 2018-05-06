@@ -23,7 +23,7 @@ class Comment extends Model
 
     public function replies()
     {
-        return $this->morphMany(Reply::class, 'repliable');
+        return $this->morphMany(Reply::class, 'repliable')->orderBy('id', 'desc');
     }
 
 }

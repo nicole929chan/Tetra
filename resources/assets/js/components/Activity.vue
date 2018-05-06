@@ -11,8 +11,17 @@
 		    	</p>
 		    	<button class="btn btn-sm btn-outline-danger" @click="destroy">del</button>
 		    </div>
+		    <p>
+		        <a href="#" @click.prevent="show = true">leave a reply</a>
+		    </p>
+		    <reply-form 
+		    	v-if="show" 
+		    	:activity="activity"
+		    	@addReply="addReply"
+		    	@cancelReply="show = false"
+		    ></reply-form>
 		    <reply
-	    	    v-for="reply, index in activity.replies"
+	    	    v-for="reply, index in replies"
 	    	    :key="reply.id"
 	    	    :reply="reply"
 	    	    @destroyReply="destroyReply(reply.id)"
@@ -24,13 +33,20 @@
 
 <script>
     import Reply from './Reply';
+    import ReplyForm from './ReplyForm';
     import moment from 'moment';
 
     export default {
     	components: {
-    		Reply
+    		Reply, ReplyForm
     	},
     	props: ['activity'],
+    	data () {
+    		return {
+    			show: false,
+    			replies: this.activity.replies
+    		}
+    	},
     	computed:{
     		ago () {
     			return moment(this.activity.updated_at).fromNow()
@@ -42,7 +58,7 @@
 
     			axios.delete(end_point)
     			    .then(response => {
-    			    	this.activity.replies = this.activity.replies.filter((reply) => {
+    			    	this.replies = this.replies.filter((reply) => {
     			    		return reply.id != replyId
     			    	})
     			    })
@@ -52,6 +68,10 @@
     		},
     		destroy () {
     			this.$emit('destroyActivity')
+    		},
+    		addReply (reply) {
+    			this.replies.unshift(reply)
+    			this.show = false
     		}
     	}
     	

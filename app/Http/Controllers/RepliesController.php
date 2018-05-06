@@ -41,7 +41,7 @@ class RepliesController extends Controller
     		$reply->save();
     	}
 
-    	if (request()->expectsJson()) return ['message' => 'Reply Created!', 'reply' => $reply];
+    	if (request()->expectsJson()) return ['message' => 'Reply Created!', 'reply' => $reply->load('owner')];
     }
 
     /**
