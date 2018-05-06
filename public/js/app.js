@@ -78066,6 +78066,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -78078,7 +78079,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       form: {
         body: this.reply.body
       },
-      currentBody: this.reply.body
+      currentBody: this.reply.body,
+      errors: null
     };
   },
 
@@ -78098,16 +78100,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.editable = true;
     },
     save: function save() {
+      var _this = this;
+
       var end_point = axios.defaults.baseURL + ('/replies/' + this.reply.id);
 
       axios.patch(end_point, this.form).then(function (response) {
-        console.log(response);
+        // console.log(response)
+        _this.currentBody = _this.form.body;
+        _this.editable = false;
       }).catch(function (error) {
-        console.log(error);
+        _this.errors = error.response.data.errors;
       });
-
-      this.currentBody = this.form.body;
-      this.editable = false;
     },
     cancel: function cancel() {
       this.form.body = this.currentBody;
@@ -78425,7 +78428,7 @@ var render = function() {
                   _vm._v("\n        " + _vm._s(_vm.form.body) + "\n      ")
                 ])
               : _c("p", [
-                  _c("input", {
+                  _c("textarea", {
                     directives: [
                       {
                         name: "model",
@@ -78434,7 +78437,7 @@ var render = function() {
                         expression: "form.body"
                       }
                     ],
-                    attrs: { type: "text", rows: "5" },
+                    attrs: { rows: "5" },
                     domProps: { value: _vm.form.body },
                     on: {
                       input: function($event) {
@@ -78446,6 +78449,14 @@ var render = function() {
                     }
                   })
                 ]),
+            _vm._v(" "),
+            _vm.errors
+              ? _c("div", [
+                  _c("small", {
+                    domProps: { textContent: _vm._s(_vm.errors.body[0]) }
+                  })
+                ])
+              : _vm._e(),
             _vm._v(" "),
             _c("div", { staticClass: "d-flex" }, [
               !_vm.editable

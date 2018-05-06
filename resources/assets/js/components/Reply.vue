@@ -13,8 +13,9 @@
           {{ form.body }}
         </p>
         <p v-else>
-          <input type="text" rows="5" v-model="form.body">
+          <textarea rows="5" v-model="form.body"></textarea>
         </p>
+        <div v-if="errors"><small v-text="errors.body[0]"></small></div>
         <div class="d-flex">
           <button class="btn btn-sm btn-outline-info" @click="edit" v-if="!editable">edit</button>
           <button class="btn btn-sm btn-outline-danger" @click="destroy" v-if="!editable">del</button>
@@ -38,7 +39,8 @@
           form: {
             body: this.reply.body
           },
-          currentBody: this.reply.body
+          currentBody: this.reply.body,
+          errors: null
     		}
     	},
       computed: {
@@ -61,14 +63,15 @@
 
           axios.patch(end_point, this.form)
             .then(response => {
-              console.log(response)
+              // console.log(response)
+              this.currentBody = this.form.body
+              this.editable = false
             })
             .catch(error => {
-              console.log(error)
+              this.errors = error.response.data.errors
             })
 
-            this.currentBody = this.form.body
-            this.editable = false
+            
         },
         cancel() {
           this.form.body = this.currentBody
