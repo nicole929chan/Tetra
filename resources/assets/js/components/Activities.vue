@@ -18,7 +18,7 @@
 	          <div class="card-body">
 	          	<activity
 	              v-for="activity, index in activities"
-	              :key="activity.id"
+	              :key="activity.uniqueId"
 	              :activity="activity"
 	              @destroyActivity="destroyActivity(activity.id, activity.type)"
 	            ></activity>
@@ -60,7 +60,8 @@
 		props: ['version'],
 		data () {
 			return {
-				activities: null
+				activities: null,
+				key: 0
 			}
 		},
 		mounted() {

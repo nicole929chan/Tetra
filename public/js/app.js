@@ -77626,7 +77626,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 	props: ['version'],
 	data: function data() {
 		return {
-			activities: null
+			activities: null,
+			key: 0
 		};
 	},
 	mounted: function mounted() {
@@ -78997,7 +78998,7 @@ var render = function() {
                       { staticClass: "card-body" },
                       _vm._l(_vm.activities, function(activity, index) {
                         return _c("activity", {
-                          key: activity.id,
+                          key: activity.uniqueId,
                           attrs: { activity: activity },
                           on: {
                             destroyActivity: function($event) {
