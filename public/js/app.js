@@ -77966,6 +77966,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -77979,7 +77981,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 	data: function data() {
 		return {
 			show: false,
-			replies: this.activity.replies
+			replies: this.activity.replies,
+			editable: false,
+			form: {
+				body: this.activity.body
+			},
+			currentBody: this.activity.body,
+			errors: null
 		};
 	},
 
@@ -78006,11 +78014,39 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			});
 		},
 		destroy: function destroy() {
-			this.$emit('destroyActivity');
+
+			if (this.replies.length == 0) {
+				this.$emit('destroyActivity');
+			}
+
+			return;
 		},
 		addReply: function addReply(reply) {
 			this.replies.unshift(reply);
 			this.show = false;
+		},
+		edit: function edit() {
+			this.editable = true;
+		},
+		save: function save() {
+			var _this2 = this;
+
+			var end_point = axios.defaults.baseURL;
+
+			end_point += this.activity.type == 'Mark' ? '/marks/' + this.activity.id : '/comments/' + this.activity.id;
+
+			axios.patch(end_point, this.form).then(function (response) {
+				_this2.currentBody = _this2.form.body;
+				_this2.editable = false;
+				_this2.errors = null;
+			}).catch(function (error) {
+				_this2.errors = error.response.data.errors;
+			});
+		},
+		cancel: function cancel() {
+			this.form.body = this.currentBody;
+			this.errors = null;
+			this.editable = false;
 		}
 	}
 
@@ -78462,7 +78498,10 @@ var render = function() {
     _vm._v(" "),
     _vm.errors
       ? _c("div", [
-          _c("small", { domProps: { textContent: _vm._s(_vm.errors.body[0]) } })
+          _c("small", {
+            staticClass: "text-danger",
+            domProps: { textContent: _vm._s(_vm.errors.body[0]) }
+          })
         ])
       : _vm._e(),
     _vm._v(" "),
@@ -78772,37 +78811,87 @@ var render = function() {
           _c("div", { domProps: { textContent: _vm._s(_vm.ago) } })
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "d-flex justify-content-between" }, [
-          _c("p", [
-            _vm._v("\n\t\t\t\t" + _vm._s(_vm.activity.body) + "\n\t    \t")
-          ])
-        ]),
+        !_vm.editable
+          ? _c("p", [_vm._v("\n\t\t\t" + _vm._s(_vm.form.body) + "\n    \t")])
+          : _c("div", { staticClass: "form-group" }, [
+              _c("textarea", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.body,
+                    expression: "form.body"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { rows: "5" },
+                domProps: { value: _vm.form.body },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form, "body", $event.target.value)
+                  }
+                }
+              })
+            ]),
+        _vm._v(" "),
+        _vm.errors
+          ? _c("div", [
+              _c("small", {
+                staticClass: "text-danger",
+                domProps: { textContent: _vm._s(_vm.errors.body[0]) }
+              })
+            ])
+          : _vm._e(),
         _vm._v(" "),
         _c("div", { staticClass: "d-flex justify-content-end" }, [
           _vm.canUpdate
             ? _c("div", { staticClass: "d-flex" }, [
-                _c("button", { staticClass: "btn btn-sm btn-outline-info" }, [
-                  _vm._v("edit")
-                ]),
+                !_vm.editable
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-sm btn-outline-info",
+                        on: { click: _vm.edit }
+                      },
+                      [_vm._v("edit")]
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-sm btn-outline-danger",
-                    on: { click: _vm.destroy }
-                  },
-                  [_vm._v("del")]
-                ),
+                !_vm.editable && _vm.replies.length == 0
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-sm btn-outline-danger",
+                        on: { click: _vm.destroy }
+                      },
+                      [_vm._v("del")]
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
-                _c("button", { staticClass: "btn btn-sm btn-outline-info" }, [
-                  _vm._v("cancel")
-                ]),
+                _vm.editable
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-sm btn-outline-info",
+                        on: { click: _vm.cancel }
+                      },
+                      [_vm._v("cancel")]
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
-                _c(
-                  "button",
-                  { staticClass: "btn btn-sm btn-outline-success" },
-                  [_vm._v("save")]
-                )
+                _vm.editable
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-sm btn-outline-success",
+                        on: { click: _vm.save }
+                      },
+                      [_vm._v("save")]
+                    )
+                  : _vm._e()
               ])
             : _vm._e()
         ]),

@@ -5,17 +5,19 @@
 	    		<h4>{{ activity.creator.name }}</h4>
 	    		<div v-text="ago"></div>
 	        </div>
-	        <div class="d-flex justify-content-between">
-		    	<p>
-					{{ activity.body }}
-		    	</p>
-		    </div>
+	    	<p v-if="!editable">
+				{{ form.body }}
+	    	</p>
+	    	<div v-else class="form-group">
+	    		<textarea rows="5" v-model="form.body" class="form-control"></textarea>
+	    	</div>
+	    	<div v-if="errors"><small v-text="errors.body[0]" class="text-danger"></small></div>
 		    <div class="d-flex justify-content-end">
 		        <div class="d-flex" v-if="canUpdate">
-			    	<button class="btn btn-sm btn-outline-info">edit</button>
-			    	<button class="btn btn-sm btn-outline-danger" @click="destroy">del</button>
-			    	<button class="btn btn-sm btn-outline-info">cancel</button>
-			    	<button class="btn btn-sm btn-outline-success">save</button>
+			    	<button class="btn btn-sm btn-outline-info" @click="edit" v-if="!editable">edit</button>
+			        <button class="btn btn-sm btn-outline-danger" @click="destroy" v-if="!editable && replies.length==0">del</button>
+			        <button class="btn btn-sm btn-outline-info" @click="cancel" v-if="editable">cancel</button>
+			        <button class="btn btn-sm btn-outline-success" @click="save" v-if="editable">save</button>
 			    </div>
 		    </div>
 		    <p>
@@ -51,7 +53,13 @@
     	data () {
     		return {
     			show: false,
-    			replies: this.activity.replies
+    			replies: this.activity.replies,
+    			editable: false,
+    			form: {
+    				body: this.activity.body
+    			},
+    			currentBody: this.activity.body,
+    			errors: null
     		}
     	},
     	computed:{
@@ -77,12 +85,40 @@
     			    })
     		},
     		destroy () {
-    			this.$emit('destroyActivity')
+
+    			if (this.replies.length == 0) {
+    				this.$emit('destroyActivity')
+    			}
+
+    			return;
     		},
     		addReply (reply) {
     			this.replies.unshift(reply)
     			this.show = false
-    		}
+    		},
+    		edit () {
+    			this.editable = true
+    		},
+    		save () {
+    			let end_point = axios.defaults.baseURL
+
+    			end_point += (this.activity.type == 'Mark') ? `/marks/${this.activity.id}` : `/comments/${this.activity.id}`
+
+    			axios.patch(end_point, this.form)
+    			    .then(response => {
+    			    	this.currentBody = this.form.body
+    			    	this.editable = false
+    			    	this.errors = null
+    			    })
+    			    .catch(error => {
+    			    	this.errors = error.response.data.errors
+    			    })
+    		},
+    		cancel () {
+    			this.form.body = this.currentBody
+    			this.errors = null
+    			this.editable = false
+    		},
     	}
     	
     }

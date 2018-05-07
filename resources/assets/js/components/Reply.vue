@@ -10,7 +10,7 @@
     <div v-else class="form-group">
       <textarea rows="5" v-model="form.body" class="form-control"></textarea>
     </div>
-    <div v-if="errors"><small v-text="errors.body[0]"></small></div>
+    <div v-if="errors"><small v-text="errors.body[0]" class="text-danger"></small></div>
     <div class="d-flex justify-content-end">
       <div class="d-flex" v-if="canUpdate">
         <button class="btn btn-sm btn-outline-info" @click="edit" v-if="!editable">edit</button>

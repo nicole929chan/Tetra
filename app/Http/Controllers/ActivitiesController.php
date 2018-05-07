@@ -21,6 +21,10 @@ class ActivitiesController extends Controller
 
     	$activities = $marks->concat($comments)->sortByDesc('created_at');
 
+        foreach ($activities as $key => $activity) {
+            $activity['uniqueId'] = $key + 1;
+        }
+
     	if (request()->expectsJson()) return $activities;
     }
 }
