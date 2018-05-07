@@ -54,7 +54,7 @@
 	    	submit () {
 	    		let end_point = axios.defaults.baseURL
 	    		if (this.activity.type == 'Mark') {
-	    			// end_point
+	    			end_point += `/replies/marks/${this.activity.id}`
 	    		} else {
 	    			end_point += `/replies/comments/${this.activity.id}`
 	    		}

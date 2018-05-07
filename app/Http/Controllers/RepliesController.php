@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Comment;
+use App\Mark;
 use App\Reply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -42,6 +43,36 @@ class RepliesController extends Controller
     	}
 
     	if (request()->expectsJson()) return ['message' => 'Reply Created!', 'reply' => $reply->load('owner')];
+    }
+
+    /**
+     * store a mark
+     * @param  Request $request 
+     * @param  Mark $mark 
+     * @return json array
+     */
+    public function mark(Request $request, Mark $mark)
+    {
+        $this->authorize('update', $mark->version->room);
+
+        $request->validate(['body' => 'required']);
+
+        $reply = $mark->replies()->create([
+            'owner_id' => auth()->id(),
+            'body' => $request->body
+        ]);
+
+        $file = $request->file('file_path');
+
+        if ($file = $request->file('file_path')) {
+            $project = $mark->version->room->project;
+
+            $file_name = today()->timestamp . '_' . $file->getClientOriginalName();
+            $reply->file_path = $file->storeAs("files/{$project->id}", $file_name, 'public');
+            $reply->save();
+        }
+
+        if (request()->expectsJson()) return ['message' => 'Reply Created!', 'reply' => $reply->load('owner')];
     }
 
     /**

@@ -77959,6 +77959,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -77979,6 +77986,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 	computed: {
 		ago: function ago() {
 			return __WEBPACK_IMPORTED_MODULE_2_moment___default()(this.activity.updated_at).fromNow();
+		},
+		canUpdate: function canUpdate() {
+			return this.activity.creator.id == window.App.user.id;
 		}
 	},
 	methods: {
@@ -78631,7 +78641,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
          var end_point = axios.defaults.baseURL;
          if (this.activity.type == 'Mark') {
-            // end_point
+            end_point += '/replies/marks/' + this.activity.id;
          } else {
             end_point += '/replies/comments/' + this.activity.id;
          }
@@ -78765,16 +78775,36 @@ var render = function() {
         _c("div", { staticClass: "d-flex justify-content-between" }, [
           _c("p", [
             _vm._v("\n\t\t\t\t" + _vm._s(_vm.activity.body) + "\n\t    \t")
-          ]),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm btn-outline-danger",
-              on: { click: _vm.destroy }
-            },
-            [_vm._v("del")]
-          )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "d-flex justify-content-end" }, [
+          _vm.canUpdate
+            ? _c("div", { staticClass: "d-flex" }, [
+                _c("button", { staticClass: "btn btn-sm btn-outline-info" }, [
+                  _vm._v("edit")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-sm btn-outline-danger",
+                    on: { click: _vm.destroy }
+                  },
+                  [_vm._v("del")]
+                ),
+                _vm._v(" "),
+                _c("button", { staticClass: "btn btn-sm btn-outline-info" }, [
+                  _vm._v("cancel")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  { staticClass: "btn btn-sm btn-outline-success" },
+                  [_vm._v("save")]
+                )
+              ])
+            : _vm._e()
         ]),
         _vm._v(" "),
         _c("p", [

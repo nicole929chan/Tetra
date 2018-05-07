@@ -9,7 +9,14 @@
 		    	<p>
 					{{ activity.body }}
 		    	</p>
-		    	<button class="btn btn-sm btn-outline-danger" @click="destroy">del</button>
+		    </div>
+		    <div class="d-flex justify-content-end">
+		        <div class="d-flex" v-if="canUpdate">
+			    	<button class="btn btn-sm btn-outline-info">edit</button>
+			    	<button class="btn btn-sm btn-outline-danger" @click="destroy">del</button>
+			    	<button class="btn btn-sm btn-outline-info">cancel</button>
+			    	<button class="btn btn-sm btn-outline-success">save</button>
+			    </div>
 		    </div>
 		    <p>
 		        <a href="#" @click.prevent="show = true">leave a reply</a>
@@ -50,6 +57,9 @@
     	computed:{
     		ago () {
     			return moment(this.activity.updated_at).fromNow()
+    		},
+    		canUpdate () {
+    			return this.activity.creator.id == window.App.user.id
     		}
     	},
     	methods: {

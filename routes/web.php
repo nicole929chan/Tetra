@@ -17,6 +17,7 @@ Route::patch('comments/{comment}', 'CommentsController@update')->name('comments.
 Route::delete('comments/{comment}', 'CommentsController@destroy')->name('comments.destroy');
 
 Route::post('replies/comments/{comment}', 'RepliesController@store')->name('replies.store');
+Route::post('replies/marks/{mark}', 'RepliesController@mark')->name('replies.store.mark');
 Route::patch('replies/{reply}', 'RepliesController@update')->name('replies.update');
 Route::delete('replies/{reply}', 'RepliesController@destroy')->name('replies.destroy');
 
