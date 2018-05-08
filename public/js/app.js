@@ -44185,8 +44185,8 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(140);
-__webpack_require__(185);
-module.exports = __webpack_require__(186);
+__webpack_require__(188);
+module.exports = __webpack_require__(189);
 
 
 /***/ }),
@@ -77445,7 +77445,7 @@ var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(167)
 /* template */
-var __vue_template__ = __webpack_require__(184)
+var __vue_template__ = __webpack_require__(187)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -77516,7 +77516,7 @@ var normalizeComponent = __webpack_require__(2)
 /* script */
 var __vue_script__ = __webpack_require__(169)
 /* template */
-var __vue_template__ = __webpack_require__(183)
+var __vue_template__ = __webpack_require__(186)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -77564,6 +77564,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Leaflet___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Leaflet__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Activity__ = __webpack_require__(173);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Activity___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Activity__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CommentForm__ = __webpack_require__(183);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CommentForm___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__CommentForm__);
 //
 //
 //
@@ -77615,19 +77617,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	components: {
-		Activity: __WEBPACK_IMPORTED_MODULE_1__Activity___default.a, Leaflet: __WEBPACK_IMPORTED_MODULE_0__Leaflet___default.a
+		Activity: __WEBPACK_IMPORTED_MODULE_1__Activity___default.a, Leaflet: __WEBPACK_IMPORTED_MODULE_0__Leaflet___default.a, CommentForm: __WEBPACK_IMPORTED_MODULE_2__CommentForm___default.a
 	},
 	props: ['version'],
 	data: function data() {
 		return {
 			activities: null,
-			key: 0
+			commentable: false,
+			currentUniqueId: 0
 		};
 	},
 	mounted: function mounted() {
@@ -77646,6 +77657,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				baseURL: axios.defaults.baseURL
 			}).then(function (response) {
 				_this.activities = response.data;
+
+				_this.currentUniqueId = _this.activities.length;
 			});
 		},
 		destroyActivity: function destroyActivity(activityId, activityType) {
@@ -77666,6 +77679,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			}).catch(function (error) {
 				console.log(error);
 			});
+		},
+		cancelComment: function cancelComment() {
+			this.commentable = false;
+		},
+		addComment: function addComment(comment) {
+			this.commentable = false;
+			this.currentUniqueId++;
+			comment.uniqueId = this.currentUniqueId;
+			this.activities.unshift(comment);
+
+			window.scrollTo(0, 0);
 		}
 	}
 });
@@ -78955,6 +78979,224 @@ if (false) {
 /* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var disposed = false
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(184)
+/* template */
+var __vue_template__ = __webpack_require__(185)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/CommentForm.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-14d701dc", Component.options)
+  } else {
+    hotAPI.reload("data-v-14d701dc", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 184 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+			props: ['version'],
+			data: function data() {
+						return {
+									form: {
+												body: '',
+												file_path: {}
+									},
+									src: '',
+									errors: null
+						};
+			},
+
+			methods: {
+						onChange: function onChange(e) {
+									var _this = this;
+
+									if (!e.target.files.length) return;
+
+									var file = e.target.files[0];
+
+									var reader = new FileReader();
+
+									reader.readAsDataURL(file);
+
+									reader.onload = function (e) {
+												var src = e.target.result;
+
+												_this.form.file_path = file;
+
+												_this.src = src;
+									};
+						},
+						cancel: function cancel() {
+									this.errors = null;
+									this.resetForm();
+									this.$emit('cancelComment');
+						},
+						submit: function submit() {
+									var _this2 = this;
+
+									var end_point = axios.defaults.baseURL + ('/comments/versions/' + this.version.id);
+
+									var data = new FormData();
+									data.append('file_path', this.form.file_path);
+									data.append('body', this.form.body);
+
+									axios.post(end_point, data).then(function (response) {
+												_this2.errors = null;
+												_this2.resetForm();
+												_this2.$emit('addComment', response.data.comment);
+									}).catch(function (error) {
+												_this2.errors = error.response.data.errors;
+									});
+						},
+						resetForm: function resetForm() {
+									this.form.body = '';
+									this.form.file = {};
+									this.src = '';
+						}
+			}
+});
+
+/***/ }),
+/* 185 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "card" }, [
+    _c("div", { staticClass: "form-group" }, [
+      _c("textarea", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.form.body,
+            expression: "form.body"
+          }
+        ],
+        staticClass: "form-control",
+        attrs: { rows: "5" },
+        domProps: { value: _vm.form.body },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.$set(_vm.form, "body", $event.target.value)
+          }
+        }
+      }),
+      _vm._v(" "),
+      _vm.errors
+        ? _c("div", [
+            _c("small", {
+              domProps: { textContent: _vm._s(_vm.errors.body[0]) }
+            })
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "custom-file" }, [
+        _c("input", {
+          staticClass: "custom-file-input",
+          attrs: { type: "file" },
+          on: { change: _vm.onChange }
+        }),
+        _vm._v(" "),
+        _c("label", { staticClass: "custom-file-label" }, [
+          _vm._v("Choose file")
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "d-flex justify-content-end" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-sm btn-outline-info",
+          on: { click: _vm.cancel }
+        },
+        [_vm._v("cancel")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-sm btn-outline-success",
+          on: { click: _vm.submit }
+        },
+        [_vm._v("save")]
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-14d701dc", module.exports)
+  }
+}
+
+/***/ }),
+/* 186 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -78978,44 +79220,74 @@ var render = function() {
         },
         [
           _c("div", { staticClass: "col p-0" }, [
-            _c("div", { attrs: { id: "accordion" } }, [
-              _c("div", { staticClass: "card" }, [
-                _vm._m(0),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "collapse show",
-                    attrs: {
-                      id: "collapseOne",
-                      "aria-labelledby": "headingOne",
-                      "data-parent": "#accordion"
-                    }
-                  },
-                  [
-                    _c(
-                      "div",
-                      { staticClass: "card-body" },
-                      _vm._l(_vm.activities, function(activity, index) {
-                        return _c("activity", {
-                          key: activity.uniqueId,
-                          attrs: { activity: activity },
-                          on: {
-                            destroyActivity: function($event) {
-                              _vm.destroyActivity(activity.id, activity.type)
+            _c(
+              "div",
+              { attrs: { id: "accordion" } },
+              [
+                _c("div", { staticClass: "card" }, [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "collapse show",
+                      attrs: {
+                        id: "collapseOne",
+                        "aria-labelledby": "headingOne",
+                        "data-parent": "#accordion"
+                      }
+                    },
+                    [
+                      _c(
+                        "div",
+                        { staticClass: "card-body" },
+                        _vm._l(_vm.activities, function(activity, index) {
+                          return _c("activity", {
+                            key: activity.uniqueId,
+                            attrs: { activity: activity },
+                            on: {
+                              destroyActivity: function($event) {
+                                _vm.destroyActivity(activity.id, activity.type)
+                              }
                             }
-                          }
+                          })
                         })
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _vm._m(1),
+                _vm._v(" "),
+                _vm.commentable
+                  ? [
+                      _c("comment-form", {
+                        attrs: { version: _vm.version },
+                        on: {
+                          cancelComment: _vm.cancelComment,
+                          addComment: _vm.addComment
+                        }
                       })
-                    )
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _vm._m(1),
-              _vm._v(" "),
-              _vm._m(2)
-            ])
+                    ]
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("div", { staticClass: "card" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-sm btn-success",
+                      on: {
+                        click: function($event) {
+                          _vm.commentable = true
+                        }
+                      }
+                    },
+                    [_vm._v("Add Comment")]
+                  )
+                ])
+              ],
+              2
+            )
           ])
         ]
       )
@@ -79092,16 +79364,6 @@ var staticRenderFns = [
         ]
       )
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card" }, [
-      _c("button", { staticClass: "btn btn-sm btn-success" }, [
-        _vm._v("Add Comment")
-      ])
-    ])
   }
 ]
 render._withStripped = true
@@ -79114,7 +79376,7 @@ if (false) {
 }
 
 /***/ }),
-/* 184 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -79139,13 +79401,13 @@ if (false) {
 }
 
 /***/ }),
-/* 185 */
+/* 188 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 186 */
+/* 189 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

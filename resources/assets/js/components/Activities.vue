@@ -39,8 +39,15 @@
 	          </div>
 	        </div>
 	      </div>
+	      <template v-if="commentable">
+	        <comment-form 
+	          :version="version" 
+	          @cancelComment="cancelComment"
+	          @addComment="addComment"
+	        ></comment-form>
+	      </template>
 	      <div class="card">
-	      	<button class="btn btn-sm btn-success">Add Comment</button>
+	      	<button class="btn btn-sm btn-success" @click="commentable = true">Add Comment</button>
 	      </div>
 	    </div>
 	  </div>
@@ -52,16 +59,18 @@
 <script>
 	import Leaflet from './Leaflet';
     import Activity from './Activity';
+    import CommentForm from './CommentForm';
 
 	export default {
 		components: {
-			Activity, Leaflet
+			Activity, Leaflet, CommentForm
 		},
 		props: ['version'],
 		data () {
 			return {
 				activities: null,
-				key: 0
+				commentable: false,
+				currentUniqueId: 0
 			}
 		},
 		mounted() {
@@ -77,9 +86,11 @@
         			baseURL: axios.defaults.baseURL
         		}).then(response => {
     		    	this.activities = response.data
-    		    })
-        	},
 
+    		    	this.currentUniqueId = this.activities.length
+    		    })
+
+        	},
 			destroyActivity (activityId, activityType) {
 				let end_point = axios.defaults.baseURL
 
@@ -98,6 +109,17 @@
 				    .catch(error => {
 				    	console.log(error)
 				    })
+			},
+			cancelComment () {
+				this.commentable = false
+			},
+			addComment (comment) {
+				this.commentable = false
+				this.currentUniqueId++
+				comment.uniqueId = this.currentUniqueId
+				this.activities.unshift(comment)
+
+				window.scrollTo(0, 0)
 			}
 		}
 	}
