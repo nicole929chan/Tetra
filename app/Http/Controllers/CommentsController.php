@@ -48,7 +48,7 @@ class CommentsController extends Controller
     		$comment->save();
     	}
 
-    	if (request()->expectsJson()) return ['message' => 'Comment Created!', 'comment' => $comment];
+    	if (request()->expectsJson()) return ['message' => 'Comment Created!', 'comment' => $comment->load('creator')->load('replies')];
     }
 
     /**
