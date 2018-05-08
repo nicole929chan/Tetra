@@ -19,7 +19,10 @@ class ActivitiesController extends Controller
     	$marks = $version->marks;
     	$comments = $version->comments;
 
-    	$activities = $marks->concat($comments)->sortByDesc('created_at');
+    	// $activities = $marks->concat($comments)->sortByDesc('created_at');
+        $activities = $marks->concat($comments);
+        $sorted = $activities->sortByDesc('created_at');
+        $activities = $sorted->values()->all();
 
         foreach ($activities as $key => $activity) {
             $activity['uniqueId'] = $key + 1;
