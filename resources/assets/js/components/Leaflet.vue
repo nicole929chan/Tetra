@@ -3,6 +3,7 @@
 	    <div class="row justify-content-center">
 	        <div class="col p-0">
 	            <div id="mapid" style="height:200px; width:100%;"></div>
+	            <!-- <div id="map" style="height:200px; width:100%;"></div> -->
 	        </div>
 	    </div>
 	</div>
@@ -19,6 +20,7 @@
     	},
     	methods: {
     		initLeaflet (versionId) {
+
     			// 設定leaflet 的高度
 				var mapheight = $(window).height() - 45;
 				$("#mapid").css('height', mapheight);
@@ -32,11 +34,6 @@
 				    center: [0, 0],
 				    zoomControl: false
 				}).setView([0, 0], 4);
-
-				//設定leaflet zoom 位置
-				L.control.zoom({
-				    position:'topright'
-				}).addTo(mymap);
 
 				// 設定圖片大小與座標範圍
 				var h = 1280,
@@ -53,61 +50,85 @@
 				mymap.setMaxBounds(bounds);
 
 				// 設定 leaflet-draw 工具列
-				var drawnItems = new L.FeatureGroup();
-				mymap.addLayer(drawnItems);
+				var drawnItems = L.featureGroup().addTo(mymap);
 
-				var drawControl = new L.Control.Draw({
-				    draw: {
-				      // 設定可以啟用的項目
-				    },
-				    edit: {
-				        featureGroup: drawnItems
-				    },
-				    position: 'bottomright',
-				});
-				mymap.addControl(drawControl);
+				mymap.addControl(new L.Control.Draw({
+		            edit: {
+		                featureGroup: drawnItems,
+		                poly : {
+		                    allowIntersection : false
+		                }
+		            },
+		            draw: {
+		                polygon : {
+		                    allowIntersection: false,
+		                    showArea:true
+		                }
+		            },
+		            position: 'bottomright',
+		        }));
 
-				// 當繪製圖層完成後需要將圖層置入leaflet
-			    mymap.on(L.Draw.Event.CREATED, function (e) {
-			    	console.log(e)
-				    var type = e.layerType, layer = e.layer;
+		        // Object created - bind popup to layer, add to feature group
+		        mymap.on(L.Draw.Event.CREATED, function(event) {
+		            var layer = event.layer;
+		            
+		            var markForm = L.DomUtil.create('div', 'infoWindow');
+        			markForm.innerHTML = `<div class="form-group">
+						<textarea rows="5" class="form-control" id="mark-body"></textarea>
+						<div class="custom-file">
+							<input type="file" class="custom-file-input" id="mark-file">
+							<label class="custom-file-label">Choose file</label>
+						</div>
+						<button id="mark-btn" class="btn btn-sm btn-outline-success">save</button>
+					</div>`;
 
-				    var LatLngs = JSON.stringify(layer.toGeoJSON());
+		            layer.bindPopup(markForm)
 
-				    mymap.addLayer(layer);
+		            drawnItems.addLayer(layer);
 
-				    // let end_point = axios.defaults.baseURL + `/marks/versions/${versionId}`;
+		            var LatLngs = JSON.stringify(layer.toGeoJSON());
 
-				    // axios.post(end_point, {
-				    // 	    body: 'test',
-				    // 	    l_object: LatLngs,
-				    // 	    lat: 1,
-				    // 	    lng: 1
-				    //     })
-				    //     .then(response => {
-				    //     	console.log(response)
-				    //     })
-				    //     .catch(error => {
-				    //     	console.log(error)
-				    //     })
-				    
-				    let form = '<form id="form-mark" name="form-mark">'
-				    form += '<textarea name="body" rows="5"></textarea>'
-				    form += '<div><button name="submit">submit</button></div>'
-				    form += '</form>'
+		            $("#mark-file", markForm).change(function () {
+		            	let file = e.target.files[0]
+			    	    let reader = new FileReader()
 
-				    // form += '<div><button>a button</button></div>'
-				    
-				    layer.bindPopup(form);
+			    	    reader.readAsDataURL(file)
 
-				});
+			    	    reader.onload = e => {
+			    	    	let src = e.target.result
 
-				
+			    	    	file_path = file
+			    	    }
+		            });
+
+				    $("#mark-btn", markForm).click({LatLngs: LatLngs, file_path: file_path}, function (e) {
+
+				    	let data = new FormData()
+			    		// data.append('file_path', file_path)
+			    		data.append('body', $("#mark-body").val())
+			    		data.append('l_object', LatLngs)
+			    		data.append('lat', 1)
+			    		data.append('lng', 1)
+
+				    	let end_point = axios.defaults.baseURL + `/marks/versions/${versionId}`;
+
+					    axios.post(end_point, data)
+				        .then(response => {
+				        	window.bus.$emit('addMark', response.data.mark)
+				        })
+				        .catch(error => {
+				        	console.log(error)
+				        })
+
+				    })
+
+		        });
 
 
     		}
 
 
     	}
+    	
     }
 </script>

@@ -1,7 +1,9 @@
 <template>
   <div>
 
-    <leaflet :version="version"></leaflet>
+    <leaflet 
+        :version="version">
+    </leaflet>
 
 	<div id="activity" class="row" style="position: absolute; top: 44px; left: 0; z-index: 999;">
 	  <div class="col p-0">
@@ -73,6 +75,15 @@
 				currentUniqueId: 0
 			}
 		},
+		created () {
+			window.bus.$on('addMark', (mark) => {
+				this.currentUniqueId++
+				mark.uniqueId = this.currentUniqueId
+				this.activities.unshift(mark)
+
+				window.scrollTo(0, 0)
+			})
+		},
 		mounted() {
             this.initData()
         },
@@ -120,7 +131,7 @@
 				this.activities.unshift(comment)
 
 				window.scrollTo(0, 0)
-			}
+			},
 		}
 	}
 </script>

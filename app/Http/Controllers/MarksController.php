@@ -45,7 +45,8 @@ class MarksController extends Controller
     		'body' => $request->body,
         'l_object' => $request->l_object,
     		'lat' => $request->lat,
-    		'lng' => $request->lng
+    		'lng' => $request->lng,
+            'type' => 'Mark'
     	]);
 
     	if ($file = $request->file('file_path')) {
@@ -56,7 +57,7 @@ class MarksController extends Controller
     		$mark->save();
     	}
 
-    	if (request()->expectsJson()) return ['message' => 'Mark Created!', 'mark' => $mark];
+    	if (request()->expectsJson()) return ['message' => 'Mark Created!', 'mark' => $mark->load('creator')->load('replies')];
     }
 
     /**

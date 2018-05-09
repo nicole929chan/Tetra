@@ -12,5 +12,6 @@
     		Activities
     	},
         props: ['room', 'version', 'project'],
+        
     }
 </script>

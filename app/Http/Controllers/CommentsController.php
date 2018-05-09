@@ -38,6 +38,7 @@ class CommentsController extends Controller
     	$comment = $version->comments()->create([
     		'creator_id' => auth()->id(),
     		'body' => $request->body,
+            'type' => 'Comment'
     	]);
 
     	if ($file = $request->file('file_path')) {
