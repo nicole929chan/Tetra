@@ -77839,7 +77839,7 @@ __webpack_require__(6);
 			mymap.on(L.Draw.Event.CREATED, function (event) {
 				var layer = event.layer;
 
-				var markForm = L.DomUtil.create('div', 'infoWindow');
+				var markForm = L.DomUtil.create('div', 'row');
 				markForm.innerHTML = '<div class="form-group">\n\t\t\t\t\t\t<textarea rows="5" class="form-control" id="mark-body"></textarea>\n\t\t\t\t\t\t<div class="custom-file">\n\t\t\t\t\t\t\t<input type="file" class="custom-file-input" id="mark-file">\n\t\t\t\t\t\t\t<label class="custom-file-label">Choose file</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<button id="mark-btn" class="btn btn-sm btn-outline-success">save</button>\n\t\t\t\t\t</div>';
 
 				layer.bindPopup(markForm);
@@ -77848,23 +77848,13 @@ __webpack_require__(6);
 
 				var LatLngs = JSON.stringify(layer.toGeoJSON());
 
-				$("#mark-file", markForm).change(function () {
-					var file = e.target.files[0];
+				$("#mark-btn", markForm).click({ LatLngs: LatLngs }, function (e) {
+					var file = document.getElementById('mark-file').files[0];
 					var reader = new FileReader();
-
 					reader.readAsDataURL(file);
 
-					reader.onload = function (e) {
-						var src = e.target.result;
-
-						file_path = file;
-					};
-				});
-
-				$("#mark-btn", markForm).click({ LatLngs: LatLngs, file_path: file_path }, function (e) {
-
 					var data = new FormData();
-					// data.append('file_path', file_path)
+					data.append('file_path', file);
 					data.append('body', $("#mark-body").val());
 					data.append('l_object', LatLngs);
 					data.append('lat', 1);

@@ -72,7 +72,7 @@
 		        mymap.on(L.Draw.Event.CREATED, function(event) {
 		            var layer = event.layer;
 		            
-		            var markForm = L.DomUtil.create('div', 'infoWindow');
+		            var markForm = L.DomUtil.create('div', 'row');
         			markForm.innerHTML = `<div class="form-group">
 						<textarea rows="5" class="form-control" id="mark-body"></textarea>
 						<div class="custom-file">
@@ -88,23 +88,13 @@
 
 		            var LatLngs = JSON.stringify(layer.toGeoJSON());
 
-		            $("#mark-file", markForm).change(function () {
-		            	let file = e.target.files[0]
-			    	    let reader = new FileReader()
-
-			    	    reader.readAsDataURL(file)
-
-			    	    reader.onload = e => {
-			    	    	let src = e.target.result
-
-			    	    	file_path = file
-			    	    }
-		            });
-
-				    $("#mark-btn", markForm).click({LatLngs: LatLngs, file_path: file_path}, function (e) {
+				    $("#mark-btn", markForm).click({LatLngs: LatLngs}, function (e) {
+				    	let  file = document.getElementById('mark-file').files[0];
+				    	let reader = new FileReader()
+				    	reader.readAsDataURL(file)
 
 				    	let data = new FormData()
-			    		// data.append('file_path', file_path)
+			    		data.append('file_path', file)
 			    		data.append('body', $("#mark-body").val())
 			    		data.append('l_object', LatLngs)
 			    		data.append('lat', 1)
