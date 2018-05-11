@@ -77656,6 +77656,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 			window.scrollTo(0, 0);
 		});
+
+		window.bus.$on('destroyMark', function (markId, leafletKey) {
+			_this.destroyActivity(markId, 'Mark');
+		});
 	},
 	mounted: function mounted() {
 		this.initData();
@@ -77780,13 +77784,18 @@ __webpack_require__(6);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	props: ['version'],
+	data: function data() {
+		return {
+			mymap: null,
+			drawnItems: null
+		};
+	},
 	mounted: function mounted() {
 		this.initLeaflet(this.version.id);
 	},
 
 	methods: {
 		initLeaflet: function initLeaflet(versionId) {
-
 			// 設定leaflet 的高度
 			var mapheight = $(window).height() - 45;
 			$("#mapid").css('height', mapheight);
@@ -77796,7 +77805,7 @@ __webpack_require__(6);
 			    // 版權說明變數
 			osm = L.tileLayer('', { minZoom: 2, maxZoom: 5, center: [0, 0], zoom: 1, attribution: osmAttrib }); // 設定參數
 
-			var mymap = L.map('mapid', {
+			this.mymap = L.map('mapid', {
 				layers: [osm],
 				center: [0, 0],
 				zoomControl: false
@@ -77805,23 +77814,23 @@ __webpack_require__(6);
 			// 設定圖片大小與座標範圍
 			var h = 1280,
 			    w = 1920,
-			    southWest = mymap.unproject([0, h], mymap.getMaxZoom() - 1),
-			    northEast = mymap.unproject([w, 0], mymap.getMaxZoom() - 1);
+			    southWest = this.mymap.unproject([0, h], this.mymap.getMaxZoom() - 1),
+			    northEast = this.mymap.unproject([w, 0], this.mymap.getMaxZoom() - 1);
 			var bounds = new L.LatLngBounds(southWest, northEast);
 
 			// 將圖片置入 leaflet
 			var url = axios.defaults.baseURL + ('/storage/' + this.version.image_path);
-			L.imageOverlay(url, bounds).addTo(mymap);
+			L.imageOverlay(url, bounds).addTo(this.mymap);
 
 			// 設定最大範圍
-			mymap.setMaxBounds(bounds);
+			this.mymap.setMaxBounds(bounds);
 
 			// 設定 leaflet-draw 工具列
-			var drawnItems = L.featureGroup().addTo(mymap);
+			this.drawnItems = L.featureGroup().addTo(this.mymap);
 
-			mymap.addControl(new L.Control.Draw({
+			this.mymap.addControl(new L.Control.Draw({
 				edit: {
-					featureGroup: drawnItems,
+					featureGroup: this.drawnItems,
 					poly: {
 						allowIntersection: false
 					}
@@ -77835,39 +77844,60 @@ __webpack_require__(6);
 				position: 'bottomright'
 			}));
 
-			// Object created - bind popup to layer, add to feature group
-			mymap.on(L.Draw.Event.CREATED, function (event) {
-				var layer = event.layer;
+			this.mymap.on(L.Draw.Event.CREATED, this.drawCreated);
+			this.mymap.on(L.Draw.Event.DELETED, this.drawDeleted);
+		},
+		drawCreated: function drawCreated(event) {
+			var layer = event.layer;
 
-				var markForm = L.DomUtil.create('div', 'row');
-				markForm.innerHTML = '<div class="form-group">\n\t\t\t\t\t\t<textarea rows="5" class="form-control" id="mark-body"></textarea>\n\t\t\t\t\t\t<div class="custom-file">\n\t\t\t\t\t\t\t<input type="file" class="custom-file-input" id="mark-file">\n\t\t\t\t\t\t\t<label class="custom-file-label">Choose file</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<button id="mark-btn" class="btn btn-sm btn-outline-success">save</button>\n\t\t\t\t\t</div>';
+			var markForm = L.DomUtil.create('div', 'row');
+			markForm.innerHTML = '<div class="form-group">\n\t\t\t\t\t<textarea rows="5" class="form-control" id="mark-body"></textarea>\n\t\t\t\t\t<div class="custom-file">\n\t\t\t\t\t\t<input type="file" class="custom-file-input" id="mark-file">\n\t\t\t\t\t\t<label class="custom-file-label">Choose file</label>\n\t\t\t\t\t</div>\n\t\t\t\t\t<button id="mark-btn" class="btn btn-sm btn-outline-success">save</button>\n\t\t\t\t</div>';
 
-				layer.bindPopup(markForm);
+			layer.bindPopup(markForm, { minWidth: 200 });
 
-				drawnItems.addLayer(layer);
+			this.drawnItems.addLayer(layer);
 
-				var LatLngs = JSON.stringify(layer.toGeoJSON());
+			var LatLngs = JSON.stringify(layer.toGeoJSON());
+			var leafletKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
-				$("#mark-btn", markForm).click({ LatLngs: LatLngs }, function (e) {
-					var file = document.getElementById('mark-file').files[0];
+			layer.leafletKey = leafletKey;
+
+			var versionId = this.version.id;
+
+			$("#mark-btn", markForm).click({
+				LatLngs: LatLngs,
+				leafletKey: leafletKey,
+				versionId: versionId
+			}, function (e) {
+				layer.closePopup();
+
+				var data = new FormData();
+
+				var file = document.getElementById('mark-file').files[0];
+				if (file !== undefined) {
 					var reader = new FileReader();
 					reader.readAsDataURL(file);
-
-					var data = new FormData();
 					data.append('file_path', file);
-					data.append('body', $("#mark-body").val());
-					data.append('l_object', LatLngs);
-					data.append('lat', 1);
-					data.append('lng', 1);
+				}
 
-					var end_point = axios.defaults.baseURL + ('/marks/versions/' + versionId);
+				data.append('body', $("#mark-body").val());
+				data.append('l_object', LatLngs);
+				data.append('leaflet_key', leafletKey);
 
-					axios.post(end_point, data).then(function (response) {
-						window.bus.$emit('addMark', response.data.mark);
-					}).catch(function (error) {
-						console.log(error);
-					});
+				var end_point = axios.defaults.baseURL + ('/marks/versions/' + versionId);
+				axios.post(end_point, data).then(function (response) {
+					layer.markId = response.data.mark.id;
+					window.bus.$emit('addMark', response.data.mark);
+				}).catch(function (error) {
+					console.log(error);
 				});
+			});
+		},
+		drawDeleted: function drawDeleted(event) {
+			var layers = event.layers;
+
+			layers.eachLayer(function (layer) {
+				window.bus.$emit('destroyMark', layer.markId, layer.leafletKey);
 			});
 		}
 	}

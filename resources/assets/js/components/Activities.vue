@@ -83,6 +83,10 @@
 
 				window.scrollTo(0, 0)
 			})
+
+			window.bus.$on('destroyMark', (markId, leafletKey) => {
+					this.destroyActivity(markId, 'Mark')
+			})
 		},
 		mounted() {
             this.initData()

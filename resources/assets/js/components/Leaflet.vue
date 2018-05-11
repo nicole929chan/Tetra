@@ -15,12 +15,17 @@
 
     export default {
     	props: ['version'],
+    	data () {
+    		return {
+    			mymap: null,
+    			drawnItems: null,
+    		}
+    	},
     	mounted () {
-    		this.initLeaflet (this.version.id)
+    		this.initLeaflet(this.version.id)
     	},
     	methods: {
     		initLeaflet (versionId) {
-
     			// 設定leaflet 的高度
 				var mapheight = $(window).height() - 45;
 				$("#mapid").css('height', mapheight);
@@ -29,7 +34,7 @@
 				var osmAttrib = 'Vertify Analytics', // 版權說明變數
 				osm = L.tileLayer('', {minZoom: 2, maxZoom: 5, center: [0, 0], zoom: 1, attribution: osmAttrib}); // 設定參數
 
-				var mymap = L.map('mapid', {
+				this.mymap = L.map('mapid', {
 				    layers: [osm],
 				    center: [0, 0],
 				    zoomControl: false
@@ -38,23 +43,23 @@
 				// 設定圖片大小與座標範圍
 				var h = 1280,
 				    w = 1920,
-				    southWest = mymap.unproject([0, h], mymap.getMaxZoom()-1),
-					northEast = mymap.unproject([w, 0], mymap.getMaxZoom()-1);
+				    southWest = this.mymap.unproject([0, h], this.mymap.getMaxZoom()-1),
+					northEast = this.mymap.unproject([w, 0], this.mymap.getMaxZoom()-1);
 					var bounds = new L.LatLngBounds(southWest, northEast);
 
 			    // 將圖片置入 leaflet
 				var url = axios.defaults.baseURL + `/storage/${this.version.image_path}`;
-				L.imageOverlay(url, bounds).addTo(mymap);
+				L.imageOverlay(url, bounds).addTo(this.mymap);
 
 				// 設定最大範圍
-				mymap.setMaxBounds(bounds);
+				this.mymap.setMaxBounds(bounds);
 
 				// 設定 leaflet-draw 工具列
-				var drawnItems = L.featureGroup().addTo(mymap);
+				this.drawnItems = L.featureGroup().addTo(this.mymap);
 
-				mymap.addControl(new L.Control.Draw({
+				this.mymap.addControl(new L.Control.Draw({
 		            edit: {
-		                featureGroup: drawnItems,
+		                featureGroup: this.drawnItems,
 		                poly : {
 		                    allowIntersection : false
 		                }
@@ -68,54 +73,74 @@
 		            position: 'bottomright',
 		        }));
 
-		        // Object created - bind popup to layer, add to feature group
-		        mymap.on(L.Draw.Event.CREATED, function(event) {
-		            var layer = event.layer;
-		            
-		            var markForm = L.DomUtil.create('div', 'row');
-        			markForm.innerHTML = `<div class="form-group">
-						<textarea rows="5" class="form-control" id="mark-body"></textarea>
-						<div class="custom-file">
-							<input type="file" class="custom-file-input" id="mark-file">
-							<label class="custom-file-label">Choose file</label>
-						</div>
-						<button id="mark-btn" class="btn btn-sm btn-outline-success">save</button>
-					</div>`;
+		        this.mymap.on(L.Draw.Event.CREATED, this.drawCreated)
+		        this.mymap.on(L.Draw.Event.DELETED, this.drawDeleted)
 
-		            layer.bindPopup(markForm)
+    		},
+    		drawCreated (event) {
+    			var layer = event.layer;
 
-		            drawnItems.addLayer(layer);
+	            var markForm = L.DomUtil.create('div', 'row');
+    			markForm.innerHTML = `<div class="form-group">
+					<textarea rows="5" class="form-control" id="mark-body"></textarea>
+					<div class="custom-file">
+						<input type="file" class="custom-file-input" id="mark-file">
+						<label class="custom-file-label">Choose file</label>
+					</div>
+					<button id="mark-btn" class="btn btn-sm btn-outline-success">save</button>
+				</div>`;
 
-		            var LatLngs = JSON.stringify(layer.toGeoJSON());
+	            layer.bindPopup(markForm, {minWidth: 200})
 
-				    $("#mark-btn", markForm).click({LatLngs: LatLngs}, function (e) {
-				    	let  file = document.getElementById('mark-file').files[0];
-				    	let reader = new FileReader()
-				    	reader.readAsDataURL(file)
+	            this.drawnItems.addLayer(layer);
 
-				    	let data = new FormData()
-			    		data.append('file_path', file)
-			    		data.append('body', $("#mark-body").val())
-			    		data.append('l_object', LatLngs)
-			    		data.append('lat', 1)
-			    		data.append('lng', 1)
+	            var LatLngs = JSON.stringify(layer.toGeoJSON());
+	            var leafletKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
-				    	let end_point = axios.defaults.baseURL + `/marks/versions/${versionId}`;
+	            layer.leafletKey = leafletKey;
+	            
+	            var versionId = this.version.id;
 
-					    axios.post(end_point, data)
+				$("#mark-btn", markForm).click({
+			    	LatLngs: LatLngs,
+			    	leafletKey: leafletKey,
+			    	versionId: versionId
+			    }, function (e) {
+			    	layer.closePopup()
+
+			    	let data = new FormData()
+
+			    	let  file = document.getElementById('mark-file').files[0];
+			    	if (file !== undefined) {
+			    		let reader = new FileReader()
+			    		reader.readAsDataURL(file)
+		    			data.append('file_path', file)
+			    	}
+
+		    		data.append('body', $("#mark-body").val())
+		    		data.append('l_object', LatLngs)
+		    		data.append('leaflet_key', leafletKey)
+
+			    	let end_point = axios.defaults.baseURL + `/marks/versions/${versionId}`;
+				    axios.post(end_point, data)
 				        .then(response => {
+				        	layer.markId = response.data.mark.id
 				        	window.bus.$emit('addMark', response.data.mark)
 				        })
 				        .catch(error => {
 				        	console.log(error)
 				        })
+			    })
+    		},
+    		drawDeleted (event) {
+    			var layers = event.layers;
 
-				    })
+    			layers.eachLayer(function (layer) {
+					window.bus.$emit('destroyMark', layer.markId, layer.leafletKey)
+    			});
+    		},
+    		
 
-		        });
-
-
-    		}
 
 
     	}

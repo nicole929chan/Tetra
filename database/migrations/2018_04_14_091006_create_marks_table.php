@@ -18,8 +18,7 @@ class CreateMarksTable extends Migration
             $table->integer('creator_id');
             $table->integer('version_id');
             $table->text('body');
-            $table->decimal('lat')->nullable();
-            $table->decimal('lng')->nullable();
+            $table->string('leaflet_key');
             $table->string('l_object')->nullable();
             $table->string('file_path')->nullable();
             $table->string('type')->default('Mark');
