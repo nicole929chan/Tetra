@@ -44214,6 +44214,8 @@ axios.defaults.baseURL = 'http://tetra';
 
 Vue.component('room', __webpack_require__(166));
 
+window.bus = new Vue();
+
 var app = new Vue({
   el: '#app'
 });
@@ -77505,6 +77507,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		Activities: __WEBPACK_IMPORTED_MODULE_0__Activities___default.a
 	},
 	props: ['room', 'version', 'project']
+
 });
 
 /***/ }),
@@ -77624,6 +77627,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -77641,13 +77646,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			currentUniqueId: 0
 		};
 	},
+	created: function created() {
+		var _this = this;
+
+		window.bus.$on('addMark', function (mark) {
+			_this.currentUniqueId++;
+			mark.uniqueId = _this.currentUniqueId;
+			_this.activities.unshift(mark);
+
+			window.scrollTo(0, 0);
+		});
+
+		window.bus.$on('destroyMark', function (markId, leafletKey) {
+			_this.destroyActivity(markId, 'Mark');
+		});
+	},
 	mounted: function mounted() {
 		this.initData();
 	},
 
 	methods: {
 		initData: function initData() {
-			var _this = this;
+			var _this2 = this;
 
 			var end_point = '/activities/versions/' + this.version.id;
 
@@ -77656,20 +77676,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				method: 'get',
 				baseURL: axios.defaults.baseURL
 			}).then(function (response) {
-				_this.activities = response.data;
+				_this2.activities = response.data;
 
-				_this.currentUniqueId = _this.activities.length;
+				_this2.currentUniqueId = _this2.activities.length;
 			});
 		},
 		destroyActivity: function destroyActivity(activityId, activityType) {
-			var _this2 = this;
+			var _this3 = this;
 
 			var end_point = axios.defaults.baseURL;
 
 			end_point += activityType == 'Mark' ? '/marks/' + activityId : '/comments/' + activityId;
 
 			axios.delete(end_point).then(function (response) {
-				_this2.activities = _this2.activities.filter(function (activity) {
+				_this3.activities = _this3.activities.filter(function (activity) {
 					if (activity.id == activityId && activity.type == activityType) {
 						return false;
 					} else {
@@ -77757,12 +77777,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 __webpack_require__(5);
 __webpack_require__(6);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	props: ['version'],
+	data: function data() {
+		return {
+			mymap: null,
+			drawnItems: null
+		};
+	},
 	mounted: function mounted() {
 		this.initLeaflet(this.version.id);
 	},
@@ -77778,82 +77805,103 @@ __webpack_require__(6);
 			    // 版權說明變數
 			osm = L.tileLayer('', { minZoom: 2, maxZoom: 5, center: [0, 0], zoom: 1, attribution: osmAttrib }); // 設定參數
 
-			var mymap = L.map('mapid', {
+			this.mymap = L.map('mapid', {
 				layers: [osm],
 				center: [0, 0],
 				zoomControl: false
 			}).setView([0, 0], 4);
 
-			//設定leaflet zoom 位置
-			L.control.zoom({
-				position: 'topright'
-			}).addTo(mymap);
-
 			// 設定圖片大小與座標範圍
 			var h = 1280,
 			    w = 1920,
-			    southWest = mymap.unproject([0, h], mymap.getMaxZoom() - 1),
-			    northEast = mymap.unproject([w, 0], mymap.getMaxZoom() - 1);
+			    southWest = this.mymap.unproject([0, h], this.mymap.getMaxZoom() - 1),
+			    northEast = this.mymap.unproject([w, 0], this.mymap.getMaxZoom() - 1);
 			var bounds = new L.LatLngBounds(southWest, northEast);
 
 			// 將圖片置入 leaflet
 			var url = axios.defaults.baseURL + ('/storage/' + this.version.image_path);
-			L.imageOverlay(url, bounds).addTo(mymap);
+			L.imageOverlay(url, bounds).addTo(this.mymap);
 
 			// 設定最大範圍
-			mymap.setMaxBounds(bounds);
+			this.mymap.setMaxBounds(bounds);
 
 			// 設定 leaflet-draw 工具列
-			var drawnItems = new L.FeatureGroup();
-			mymap.addLayer(drawnItems);
+			this.drawnItems = L.featureGroup().addTo(this.mymap);
 
-			var drawControl = new L.Control.Draw({
-				draw: {
-					// 設定可以啟用的項目
-				},
+			this.mymap.addControl(new L.Control.Draw({
 				edit: {
-					featureGroup: drawnItems
+					featureGroup: this.drawnItems,
+					poly: {
+						allowIntersection: false
+					}
+				},
+				draw: {
+					polygon: {
+						allowIntersection: false,
+						showArea: true
+					}
 				},
 				position: 'bottomright'
+			}));
+
+			this.mymap.on(L.Draw.Event.CREATED, this.drawCreated);
+			this.mymap.on(L.Draw.Event.DELETED, this.drawDeleted);
+		},
+		drawCreated: function drawCreated(event) {
+			var layer = event.layer;
+
+			var markForm = L.DomUtil.create('div', 'row');
+			markForm.innerHTML = '<div class="form-group">\n\t\t\t\t\t<textarea rows="5" class="form-control" id="mark-body"></textarea>\n\t\t\t\t\t<div class="custom-file">\n\t\t\t\t\t\t<input type="file" class="custom-file-input" id="mark-file">\n\t\t\t\t\t\t<label class="custom-file-label">Choose file</label>\n\t\t\t\t\t</div>\n\t\t\t\t\t<button id="mark-btn" class="btn btn-sm btn-outline-success">save</button>\n\t\t\t\t</div>';
+
+			layer.bindPopup(markForm, { minWidth: 200 });
+
+			this.drawnItems.addLayer(layer);
+
+			var LatLngs = JSON.stringify(layer.toGeoJSON());
+			var leafletKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+			layer.leafletKey = leafletKey;
+
+			var versionId = this.version.id;
+
+			$("#mark-btn", markForm).click({
+				LatLngs: LatLngs,
+				leafletKey: leafletKey,
+				versionId: versionId
+			}, function (e) {
+				layer.closePopup();
+
+				var data = new FormData();
+
+				var file = document.getElementById('mark-file').files[0];
+				if (file !== undefined) {
+					var reader = new FileReader();
+					reader.readAsDataURL(file);
+					data.append('file_path', file);
+				}
+
+				data.append('body', $("#mark-body").val());
+				data.append('l_object', LatLngs);
+				data.append('leaflet_key', leafletKey);
+
+				var end_point = axios.defaults.baseURL + ('/marks/versions/' + versionId);
+				axios.post(end_point, data).then(function (response) {
+					layer.markId = response.data.mark.id;
+					window.bus.$emit('addMark', response.data.mark);
+				}).catch(function (error) {
+					console.log(error);
+				});
 			});
-			mymap.addControl(drawControl);
+		},
+		drawDeleted: function drawDeleted(event) {
+			var layers = event.layers;
 
-			// 當繪製圖層完成後需要將圖層置入leaflet
-			mymap.on(L.Draw.Event.CREATED, function (e) {
-				console.log(e);
-				var type = e.layerType,
-				    layer = e.layer;
-
-				var LatLngs = JSON.stringify(layer.toGeoJSON());
-
-				mymap.addLayer(layer);
-
-				// let end_point = axios.defaults.baseURL + `/marks/versions/${versionId}`;
-
-				// axios.post(end_point, {
-				// 	    body: 'test',
-				// 	    l_object: LatLngs,
-				// 	    lat: 1,
-				// 	    lng: 1
-				//     })
-				//     .then(response => {
-				//     	console.log(response)
-				//     })
-				//     .catch(error => {
-				//     	console.log(error)
-				//     })
-
-				var form = '<form id="form-mark" name="form-mark">';
-				form += '<textarea name="body" rows="5"></textarea>';
-				form += '<div><button name="submit">submit</button></div>';
-				form += '</form>';
-
-				// form += '<div><button>a button</button></div>'
-
-				layer.bindPopup(form);
+			layers.eachLayer(function (layer) {
+				window.bus.$emit('destroyMark', layer.markId, layer.leafletKey);
 			});
 		}
 	}
+
 });
 
 /***/ }),

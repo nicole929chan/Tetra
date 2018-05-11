@@ -19,6 +19,8 @@ axios.defaults.baseURL = 'http://tetra';
 
 Vue.component('room', require('./components/Room.vue'));
 
+window.bus = new Vue();
+
 const app = new Vue({
     el: '#app'
 });

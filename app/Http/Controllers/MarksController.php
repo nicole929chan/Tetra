@@ -36,16 +36,15 @@ class MarksController extends Controller
         $request->validate([
             'body' => 'required',
         'l_object' => 'required',
-            'lat' => 'required',
-            'lng' => 'required',
+            'leaflet_key' => 'required'
         ]);
 
     	$mark = $version->marks()->create([
     		'creator_id' => auth()->id(),
     		'body' => $request->body,
         'l_object' => $request->l_object,
-    		'lat' => $request->lat,
-    		'lng' => $request->lng
+            'leaflet_key' => $request->leaflet_key,
+            'type' => 'Mark'
     	]);
 
     	if ($file = $request->file('file_path')) {
@@ -56,7 +55,7 @@ class MarksController extends Controller
     		$mark->save();
     	}
 
-    	if (request()->expectsJson()) return ['message' => 'Mark Created!', 'mark' => $mark];
+    	if (request()->expectsJson()) return ['message' => 'Mark Created!', 'mark' => $mark->load('creator')->load('replies')];
     }
 
     /**
