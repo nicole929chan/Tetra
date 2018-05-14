@@ -44204,7 +44204,7 @@ __webpack_require__(141);
 
 window.Vue = __webpack_require__(163);
 
-axios.defaults.baseURL = 'http://tetra';
+axios.defaults.baseURL = 'http://tetra.tk';
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -77629,6 +77629,54 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -79249,101 +79297,164 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("leaflet", { attrs: { version: _vm.version } }),
-      _vm._v(" "),
+  return _c("div", { staticClass: "container-fluid p-0" }, [
+    _c("div", { staticClass: "row" }, [
       _c(
         "div",
-        {
-          staticClass: "row",
-          staticStyle: {
-            position: "absolute",
-            top: "44px",
-            left: "0",
-            "z-index": "999"
-          },
-          attrs: { id: "activity" }
-        },
+        { staticClass: "col-3 position-fixed", attrs: { id: "sidebar" } },
         [
-          _c("div", { staticClass: "col p-0" }, [
-            _c(
-              "div",
-              { attrs: { id: "accordion" } },
-              [
-                _c("div", { staticClass: "card" }, [
-                  _vm._m(0),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    {
-                      staticClass: "collapse show",
-                      attrs: {
-                        id: "collapseOne",
-                        "aria-labelledby": "headingOne",
-                        "data-parent": "#accordion"
-                      }
-                    },
-                    [
-                      _c(
-                        "div",
-                        { staticClass: "card-body" },
-                        _vm._l(_vm.activities, function(activity, index) {
-                          return _c("activity", {
-                            key: activity.uniqueId,
-                            attrs: { activity: activity },
-                            on: {
-                              destroyActivity: function($event) {
-                                _vm.destroyActivity(activity.id, activity.type)
+          _vm._m(0),
+          _vm._v(" "),
+          _vm._m(1),
+          _vm._v(" "),
+          _c("div", { staticClass: "row", attrs: { id: "activity" } }, [
+            _c("div", { staticClass: "col p-0" }, [
+              _c(
+                "div",
+                { attrs: { id: "accordion" } },
+                [
+                  _c("div", { staticClass: "card" }, [
+                    _vm._m(2),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass: "collapse show",
+                        attrs: {
+                          id: "collapseOne",
+                          "aria-labelledby": "headingOne",
+                          "data-parent": "#accordion"
+                        }
+                      },
+                      [
+                        _c(
+                          "div",
+                          { staticClass: "card-body" },
+                          _vm._l(_vm.activities, function(activity, index) {
+                            return _c("activity", {
+                              key: activity.uniqueId,
+                              attrs: { activity: activity },
+                              on: {
+                                destroyActivity: function($event) {
+                                  _vm.destroyActivity(
+                                    activity.id,
+                                    activity.type
+                                  )
+                                }
                               }
-                            }
+                            })
                           })
+                        )
+                      ]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _vm._m(3),
+                  _vm._v(" "),
+                  _vm.commentable
+                    ? [
+                        _c("comment-form", {
+                          attrs: { version: _vm.version },
+                          on: {
+                            cancelComment: _vm.cancelComment,
+                            addComment: _vm.addComment
+                          }
                         })
-                      )
-                    ]
-                  )
-                ]),
-                _vm._v(" "),
-                _vm._m(1),
-                _vm._v(" "),
-                _vm.commentable
-                  ? [
-                      _c("comment-form", {
-                        attrs: { version: _vm.version },
+                      ]
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "card" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-sm btn-success",
                         on: {
-                          cancelComment: _vm.cancelComment,
-                          addComment: _vm.addComment
+                          click: function($event) {
+                            _vm.commentable = true
+                          }
                         }
-                      })
-                    ]
-                  : _vm._e(),
-                _vm._v(" "),
-                _c("div", { staticClass: "card" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-sm btn-success",
-                      on: {
-                        click: function($event) {
-                          _vm.commentable = true
-                        }
-                      }
-                    },
-                    [_vm._v("Add Comment")]
-                  )
-                ])
-              ],
-              2
-            )
+                      },
+                      [_vm._v("Add Comment")]
+                    )
+                  ])
+                ],
+                2
+              )
+            ])
           ])
         ]
-      )
-    ],
-    1
-  )
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "col p-0" }, [
+        _vm._m(4),
+        _vm._v(" "),
+        _c(
+          "main",
+          { staticClass: "p-0" },
+          [_c("leaflet", { attrs: { version: _vm.version } })],
+          1
+        )
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "row align-item-center", attrs: { id: "profile" } },
+      [
+        _c("div", { staticClass: "col-10 media" }, [
+          _c("img", {
+            staticClass: "rounded-circle align-self-center mr-3 ml-3",
+            attrs: {
+              src: "https://dummyimage.com/80/828187/ffffff.jpg&text=MNS",
+              alt: ""
+            }
+          }),
+          _vm._v(" "),
+          _c("div", { staticClass: "media-body align-self-center" }, [
+            _vm._v("\n            75 Greene Avenue,"),
+            _c("br"),
+            _vm._v("\n            Brooklyn"),
+            _c("br"),
+            _vm._v("\n            NY 11201\n          ")
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-2" }, [
+          _c("a", { attrs: { href: "#", id: "sidebar-arrow" } }, [
+            _c("img", {
+              staticClass: "mt-5",
+              attrs: { src: "/images/tools_off.png", alt: "" }
+            })
+          ])
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col p-0" }, [
+        _c("form", { attrs: { action: "#" } }, [
+          _c(
+            "select",
+            {
+              staticClass: "custom-select",
+              attrs: { name: "rooms", id: "rooms" }
+            },
+            [_c("option", { attrs: { value: "" } }, [_vm._v("MASTER BATH 5F")])]
+          )
+        ])
+      ])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -79364,7 +79475,7 @@ var staticRenderFns = [
                 "aria-controls": "collapseOne"
               }
             },
-            [_vm._v("\n\t              Activity\n\t            ")]
+            [_vm._v("\n    \t              Activity\n    \t            ")]
           )
         ])
       ]
@@ -79388,7 +79499,7 @@ var staticRenderFns = [
                 "aria-controls": "collapseTwo"
               }
             },
-            [_vm._v("\n\t              Files\n\t            ")]
+            [_vm._v("\n    \t              Files\n    \t            ")]
           )
         ])
       ]),
@@ -79406,12 +79517,87 @@ var staticRenderFns = [
         [
           _c("div", { staticClass: "card-body" }, [
             _vm._v(
-              "\n\t            ajax 讀取 files (ActivitiesController)\n\t          "
+              "\n    \t            ajax 讀取 files (ActivitiesController)\n    \t          "
             )
           ])
         ]
       )
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "nav",
+      {
+        staticClass: "navbar navbar-expand-md navbar-light navbar-laravel",
+        attrs: { id: "menu" }
+      },
+      [
+        _c("div", { staticClass: "container" }, [
+          _c(
+            "button",
+            {
+              staticClass: "navbar-toggler",
+              attrs: {
+                type: "button",
+                "data-toggle": "collapse",
+                "data-target": "#navbarSupportedContent",
+                "aria-controls": "navbarSupportedContent",
+                "aria-expanded": "false",
+                "aria-label": "Toggle navigation"
+              }
+            },
+            [_c("span", { staticClass: "navbar-toggler-icon" })]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "collapse navbar-collapse text-center",
+              attrs: { id: "navbarSupportedContent" }
+            },
+            [
+              _c("ul", { staticClass: "navbar-nav" }, [
+                _c("li", [
+                  _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
+                    _vm._v("PROJECTS")
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("li", [
+                  _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
+                    _vm._v("USERS")
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("li", [
+                  _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
+                    _vm._v("HELP")
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("li", [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "nav-link",
+                      attrs: { href: "#", id: "menu_off" }
+                    },
+                    [
+                      _c("img", {
+                        attrs: { src: "/images/menu_off.png", alt: "" }
+                      })
+                    ]
+                  )
+                ])
+              ])
+            ]
+          )
+        ])
+      ]
+    )
   }
 ]
 render._withStripped = true
