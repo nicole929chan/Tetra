@@ -44,7 +44,8 @@ class MarksController extends Controller
     		'body' => $request->body,
         'l_object' => $request->l_object,
             'leaflet_key' => $request->leaflet_key,
-            'type' => 'Mark'
+            'type' => 'Mark',
+            'file_path' => null
     	]);
 
     	if ($file = $request->file('file_path')) {
