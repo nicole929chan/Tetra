@@ -136,9 +136,22 @@
 					this.destroyActivity(markId, 'Mark')
 			})
 
-      window.bus.$on('updateMark', (mark) => {
-          
-      })
+		    window.bus.$on('updateMark', (mark) => {
+		    	this.activities.forEach((activity) => {
+	    			if (activity.id == mark.id && activity.type == 'Mark') {
+	    				activity.body = mark.body
+	    				activity.file_path = mark.file_path
+	    			}	
+		    	});
+		    	// this.activities = this.activities.filter((activity) => {
+		    	// 	if (activity.id == mark.id && activity.type == 'Mark') {
+		    	// 		activity.body = mark.body
+		    	// 		return true
+		    	// 	} else {
+		    	// 		return true
+		    	// 	}
+		    	// })
+		    })
 		},
 		mounted() {
             this.initData()

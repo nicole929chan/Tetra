@@ -7,6 +7,8 @@
 	        </div>
 	    	<p v-if="!editable">
 				{{ form.body }}
+                <br>
+                <a :href="'/storage/' + form.file_path" v-if="form.file_path" target="_blank">#download</a>
 	    	</p>
 	    	<div v-else class="form-group">
 	    		<textarea rows="5" v-model="form.body" class="form-control"></textarea>
@@ -56,7 +58,8 @@
     			replies: this.activity.replies,
     			editable: false,
     			form: {
-    				body: this.activity.body
+    				body: this.activity.body,
+                    file_path: this.activity.file_path
     			},
     			currentBody: this.activity.body,
     			errors: null
@@ -70,6 +73,15 @@
     			return this.activity.creator.id == window.App.user.id
     		}
     	},
+        watch: {
+            'activity.body' (newVal) {
+                this.form.body = newVal
+                this.currentBody = newVal
+            },
+            'activity.file_path' (newVal) {
+                this.form.file_path = newVal
+            }
+        },
     	methods: {
     		destroyReply (replyId) {
     			let end_point = axios.defaults.baseURL + `/replies/${replyId}`
