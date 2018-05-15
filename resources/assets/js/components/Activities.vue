@@ -135,6 +135,10 @@
 			window.bus.$on('destroyMark', (markId, leafletKey) => {
 					this.destroyActivity(markId, 'Mark')
 			})
+
+      window.bus.$on('updateMark', (mark) => {
+          
+      })
 		},
 		mounted() {
             this.initData()

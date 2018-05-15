@@ -73,7 +73,17 @@ class MarksController extends Controller
     	$mark->body = $request->body;
     	$mark->save();
 
-    	if (request()->expectsJson()) return ['message' => 'Mark Updated!', 'mark' => $mark];
+        if ($file = $request->file('file_path')) {
+            Storage::disk('public')->delete($mark->file_path);  // 刪除舊檔
+
+            $project = $mark->version->room->project;
+
+            $file_name = today()->timestamp . '_' . $file->getClientOriginalName();
+            $mark->file_path = $file->storeAs("files/{$project->id}", $file_name, 'public');
+            $mark->save();
+        }
+
+        if (request()->expectsJson()) return ['message' => 'Mark Updated!', 'mark' => $mark];
     }
 
     /**

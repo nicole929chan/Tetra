@@ -87,7 +87,7 @@
 						<input type="file" class="custom-file-input" id="mark-file">
 						<label class="custom-file-label">Choose file</label>
 					</div>
-					<button id="mark-btn" class="btn btn-sm btn-outline-success">save</button>
+					<button id="mark-save-btn" class="btn btn-sm btn-outline-success">save</button>
 				</div>`;
 
 	            layer.bindPopup(markForm, {minWidth: 200})
@@ -101,14 +101,9 @@
 	            
 	            var versionId = this.version.id;
 
-				$("#mark-btn", markForm).click({
-			    	LatLngs: LatLngs,
-			    	leafletKey: leafletKey,
-			    	versionId: versionId
-			    }, function (e) {
-			    	layer.closePopup()
-
-			    	let data = new FormData()
+	            // 新增一筆mark
+	            function saveMark(LatLngs, leafletKey, versionId) {
+	            	let data = new FormData()
 
 			    	let  file = document.getElementById('mark-file').files[0];
 			    	if (file !== undefined) {
@@ -130,6 +125,45 @@
 				        .catch(error => {
 				        	console.log(error)
 				        })
+	            }
+
+	            // 
+	            function updateMark(markId) {
+	            	let data = new FormData()
+
+			    	let  file = document.getElementById('mark-file').files[0];
+			    	if (file !== undefined) {
+			    		let reader = new FileReader()
+			    		reader.readAsDataURL(file)
+		    			data.append('file_path', file)
+			    	}
+
+		    		data.append('body', $("#mark-body").val())
+		    		data.append('_method', 'PATCH');
+
+	            	let end_point = axios.defaults.baseURL + `/marks/${markId}`;
+
+				    axios.post(end_point, data)
+				        .then(response => {
+				        	window.bus.$emit('updateMark', response.data.mark)
+				        })
+				        .catch(error => {
+				        	console.log(error)
+				        })
+	            }
+
+				$("#mark-save-btn", markForm).click({
+			    	LatLngs: LatLngs,
+			    	leafletKey: leafletKey,
+			    	versionId: versionId
+			    }, function (e) {
+			    	layer.closePopup()
+
+			    	if (layer.markId) {
+						updateMark(layer.markId)			    			
+			    	} else {
+			    		saveMark(LatLngs, leafletKey, versionId);
+			    	}
 			    })
     		},
     		drawDeleted (event) {
@@ -139,7 +173,7 @@
 					window.bus.$emit('destroyMark', layer.markId, layer.leafletKey)
     			});
     		},
-    		
+
 
 
 
