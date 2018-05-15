@@ -6,6 +6,8 @@
     </div>
     <p v-if="!editable">
       {{ form.body }}
+      <br>
+      <a :href="'/storage/' + form.file_path" v-if="form.file_path" target="_blank">#download</a>
     </p>
     <div v-else class="form-group">
       <textarea rows="5" v-model="form.body" class="form-control"></textarea>
@@ -31,7 +33,8 @@
     		return {
           editable: false,
           form: {
-            body: this.reply.body
+            body: this.reply.body,
+            file_path: this.reply.file_path
           },
           currentBody: this.reply.body,
           errors: null
