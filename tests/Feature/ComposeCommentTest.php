@@ -102,7 +102,7 @@ class ComposeCommentTest extends TestCase
     		'body' => $comment->body
     	]);
 
-    	$path = "files/{$this->project->id}/" . today()->timestamp . '_comment.png';
+    	$path = "files/{$this->project->id}/" . \Carbon\Carbon::now()->timestamp . '_comment.png';
 
     	Storage::disk('public')->assertExists($path);
     }

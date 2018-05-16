@@ -44,7 +44,7 @@ class CommentsController extends Controller
     	if ($file = $request->file('file_path')) {
     		$project = $version->room->project;
 
-    		$file_name = today()->timestamp . '_' . $file->getClientOriginalName();
+    		$file_name = \Carbon\Carbon::now()->timestamp . '_' . $file->getClientOriginalName();
     		$comment->file_path = $file->storeAs("files/{$project->id}", $file_name, 'public');
     		$comment->save();
     	}

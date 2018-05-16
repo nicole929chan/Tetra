@@ -37,7 +37,7 @@ class RepliesController extends Controller
     	if ($file = $request->file('file_path')) {
     		$project = $comment->version->room->project;
 
-    		$file_name = today()->timestamp . '_' . $file->getClientOriginalName();
+    		$file_name = \Carbon\Carbon::now()->timestamp . '_' . $file->getClientOriginalName();
     		$reply->file_path = $file->storeAs("files/{$project->id}", $file_name, 'public');
     		$reply->save();
     	}

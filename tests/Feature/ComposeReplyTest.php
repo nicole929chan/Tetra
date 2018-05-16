@@ -52,7 +52,7 @@ class ComposeReplyTest extends TestCase
 
     	$this->assertDatabaseHas('replies', ['repliable_id' => $this->comment->id, 'body' => 'new reply']);
 
-    	$path = "files/{$this->project->id}/" . today()->timestamp . '_reply.png';
+    	$path = "files/{$this->project->id}/" . \Carbon\Carbon::now()->timestamp . '_reply.png';
     	
     	Storage::disk('public')->assertExists($path);
     }
@@ -129,7 +129,7 @@ class ComposeReplyTest extends TestCase
             'body' => 'new reply',
             'file_path' => $file = UploadedFile::fake()->image('reply.png')
         ]);
-        $path = "files/{$this->project->id}/" . today()->timestamp . '_reply.png';
+        $path = "files/{$this->project->id}/" . \Carbon\Carbon::now()->timestamp . '_reply.png';
         
         Storage::disk('public')->assertExists($path);
 
