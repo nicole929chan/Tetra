@@ -9,8 +9,7 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-// axios.defaults.baseURL = 'http://tetra.tk';
-axios.defaults.baseURL = 'http://localhost';
+axios.defaults.baseURL = 'http://tetra.tk';
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

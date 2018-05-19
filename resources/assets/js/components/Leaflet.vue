@@ -83,17 +83,15 @@
 				this.drawnItems = L.featureGroup().addTo(this.mymap);
 
 				this.mymap.addControl(new L.Control.Draw({
-		            edit: {
-		                featureGroup: this.drawnItems,
-		                poly : {
-		                    allowIntersection : false
-		                }
-		            },
-		            draw: {
+					draw: {
+		            	polyline: false,
 		                polygon : {
 		                    allowIntersection: false,
-		                    showArea:true
-		                }
+		                },
+		            },
+		            edit: {
+		                featureGroup: this.drawnItems,
+		                edit: false
 		            },
 		            position: 'bottomright',
 		        }));
@@ -133,6 +131,10 @@
 	            	markBody: $("#mark-body", form), 
 	            	markFile: $("input:file", form) }, 
 	            	this.saveMarkToDB)
+
+	            layer.on('mouseover', () => {
+	    			layer.openPopup();
+	    		})
     		},
     		drawDeleted (event) {
     			var layers = event.layers;
@@ -184,6 +186,11 @@
     			    			markBody: $("#mark-body", form), 
     			    			markFile: $("input:file", form) }, 
     			    			this.updateMarkToDB);
+
+    			    		layer.on('mouseover', () => {
+    			    			layer.openPopup();
+    			    		})
+
     			    	})
     			    })
     			    .catch(error => {
