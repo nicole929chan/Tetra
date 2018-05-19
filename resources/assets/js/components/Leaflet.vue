@@ -40,6 +40,14 @@
 		    		}
 		    	})
 	    	})
+
+	    	window.bus.$on('deleteLeaflet', (markId) => {
+	    		this.drawnItems.eachLayer((layer) => {
+	    			if (layer.markId == markId) {
+		    			this.drawnItems.removeLayer(layer);
+		    		}
+	    		})
+	    	})
     	},
     	methods: {
     		initLeaflet (versionId) {
@@ -171,7 +179,10 @@
     			    		this.drawnItems.addLayer(layer.bindPopup(form, {minWidth: 200}));
     			    		
     			    		$("#mark-save-btn", form).on('click', null, { 
-    			    			markId: mark.id, markBody: $("#mark-body", form), markFile: $("input:file", form) }, 
+    			    			layer: layer,
+    			    			markId: mark.id, 
+    			    			markBody: $("#mark-body", form), 
+    			    			markFile: $("input:file", form) }, 
     			    			this.updateMarkToDB);
     			    	})
     			    })
@@ -200,6 +211,7 @@
 			    axios.post(end_point, data)
 			        .then(response => {
 			        	// display the changes on panel
+			        	event.data.layer.closePopup()
 			        	window.bus.$emit('updateMark', response.data.mark)
 			        })
 			        .catch(error => {
@@ -240,7 +252,7 @@
 			    axios.post(end_point, data)
 			        .then(response => {
 			        	layer.markId = response.data.mark.id
-			        	// layer.closePopup()
+			        	layer.closePopup()
 			        	// display the new mark on panel
 			        	window.bus.$emit('addMark', response.data.mark)
 			        })

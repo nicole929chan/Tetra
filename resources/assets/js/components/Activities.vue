@@ -178,12 +178,17 @@
 
 				axios.delete(end_point)
 				    .then(response => {
+              if (activityType == 'Mark') {
+                window.bus.$emit('deleteLeaflet', activityId)
+              }
+              
 				    	this.activities = this.activities.filter((activity) => {
 				    		if (activity.id == activityId && activity.type == activityType) {
 				    			return false
 				    		} else {
 				    			return true
 				    		}
+
 				    	})
 				    })
 				    .catch(error => {
