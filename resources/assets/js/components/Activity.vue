@@ -116,6 +116,10 @@
 
     			end_point += (this.activity.type == 'Mark') ? `/marks/${this.activity.id}` : `/comments/${this.activity.id}`
 
+                if (this.activity.type == 'Mark') {
+                    window.bus.$emit('updateLeaflet', this.activity.id, this.form.body)
+                }
+
     			axios.patch(end_point, this.form)
     			    .then(response => {
     			    	this.currentBody = this.form.body

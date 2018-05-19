@@ -19,7 +19,7 @@ class CreateMarksTable extends Migration
             $table->integer('version_id');
             $table->text('body');
             $table->string('leaflet_key');
-            $table->string('l_object')->nullable();
+            $table->text('l_object')->nullable();
             $table->string('file_path')->nullable();
             $table->string('type')->default('Mark');
             $table->timestamps();
