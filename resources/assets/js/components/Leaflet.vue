@@ -23,6 +23,31 @@
     	},
     	mounted () {
     		this.initLeaflet(this.version.id)
+
+    		this.retrieveDraws()
+
+    		this.mymap.on(L.Draw.Event.CREATED, this.drawCreated)
+		    this.mymap.on(L.Draw.Event.DELETED, this.drawDeleted)
+
+		    window.bus.$on('updateLeaflet', (markId, body) => {
+		    	this.drawnItems.eachLayer((layer) => {
+		    		if (layer.markId == markId) {
+		    			let form = layer.getPopup().getContent()
+
+		    			$("#mark-body", form).val(body)
+
+		    			layer.openPopup()
+		    		}
+		    	})
+	    	})
+
+	    	window.bus.$on('deleteLeaflet', (markId) => {
+	    		this.drawnItems.eachLayer((layer) => {
+	    			if (layer.markId == markId) {
+		    			this.drawnItems.removeLayer(layer);
+		    		}
+	    		})
+	    	})
     	},
     	methods: {
     		initLeaflet (versionId) {
@@ -58,124 +83,190 @@
 				this.drawnItems = L.featureGroup().addTo(this.mymap);
 
 				this.mymap.addControl(new L.Control.Draw({
-		            edit: {
-		                featureGroup: this.drawnItems,
-		                poly : {
-		                    allowIntersection : false
-		                }
-		            },
-		            draw: {
+					draw: {
+		            	polyline: false,
 		                polygon : {
 		                    allowIntersection: false,
-		                    showArea:true
-		                }
+		                },
+		            },
+		            edit: {
+		                featureGroup: this.drawnItems,
+		                edit: false
 		            },
 		            position: 'bottomright',
 		        }));
-
-		        this.mymap.on(L.Draw.Event.CREATED, this.drawCreated)
-		        this.mymap.on(L.Draw.Event.DELETED, this.drawDeleted)
-
     		},
     		drawCreated (event) {
     			var layer = event.layer;
-
-	            var markForm = L.DomUtil.create('div', 'row');
-    			markForm.innerHTML = `<div class="form-group">
-					<textarea rows="5" class="form-control" id="mark-body"></textarea>
-					<div class="custom-file">
-						<input type="file" class="custom-file-input" id="mark-file">
-						<label class="custom-file-label">Choose file</label>
-					</div>
-					<button id="mark-save-btn" class="btn btn-sm btn-outline-success">save</button>
-				</div>`;
-
-	            layer.bindPopup(markForm, {minWidth: 200})
-
-	            this.drawnItems.addLayer(layer);
-
-	            var LatLngs = JSON.stringify(layer.toGeoJSON());
+    			// console.log(layer)
+    			var LatLngs = JSON.stringify(layer.toGeoJSON());
 	            var leafletKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
 	            layer.leafletKey = leafletKey;
-	            
-	            var versionId = this.version.id;
 
-	            // 新增一筆mark
-	            function saveMark(LatLngs, leafletKey, versionId) {
-	            	let data = new FormData()
+	            let markForm = function () {
+		    		let form = L.DomUtil.create('div', 'row');
+		    		form.innerHTML = `<div class="form-group">
+						<textarea rows="5" class="form-control" id="mark-body"></textarea>
+						<div class="custom-file">
+							<input type="file" class="custom-file-input" id="mark-file">
+							<label class="custom-file-label">Choose file</label>
+						</div>
+						<button id="mark-save-btn" class="btn btn-sm btn-outline-success">save</button>
+					</div>`;
 
-			    	let  file = document.getElementById('mark-file').files[0];
-			    	if (file !== undefined) {
-			    		let reader = new FileReader()
-			    		reader.readAsDataURL(file)
-		    			data.append('file_path', file)
-			    	}
+					return form;
+		    	}
 
-		    		data.append('body', $("#mark-body").val())
-		    		data.append('l_object', LatLngs)
-		    		data.append('leaflet_key', leafletKey)
+		    	let form = markForm()
 
-			    	let end_point = axios.defaults.baseURL + `/marks/versions/${versionId}`;
-				    axios.post(end_point, data)
-				        .then(response => {
-				        	layer.markId = response.data.mark.id
-				        	window.bus.$emit('addMark', response.data.mark)
-				        })
-				        .catch(error => {
-				        	console.log(error)
-				        })
-	            }
+	            layer.bindPopup(form, {minWidth: 200})
 
-	            // 
-	            function updateMark(markId) {
-	            	let data = new FormData()
+	            this.drawnItems.addLayer(layer);
 
-			    	let  file = document.getElementById('mark-file').files[0];
-			    	if (file !== undefined) {
-			    		let reader = new FileReader()
-			    		reader.readAsDataURL(file)
-		    			data.append('file_path', file)
-			    	}
+	            $("#mark-save-btn", form).on('click', null, { 
+	            	layer: layer,
+	            	LatLngs: LatLngs,
+	            	leafletKey: leafletKey, 
+	            	markBody: $("#mark-body", form), 
+	            	markFile: $("input:file", form) }, 
+	            	this.saveMarkToDB)
 
-		    		data.append('body', $("#mark-body").val())
-		    		data.append('_method', 'PATCH');
-
-	            	let end_point = axios.defaults.baseURL + `/marks/${markId}`;
-
-				    axios.post(end_point, data)
-				        .then(response => {
-				        	window.bus.$emit('updateMark', response.data.mark)
-				        })
-				        .catch(error => {
-				        	console.log(error)
-				        })
-	            }
-
-				$("#mark-save-btn", markForm).click({
-			    	LatLngs: LatLngs,
-			    	leafletKey: leafletKey,
-			    	versionId: versionId
-			    }, function (e) {
-			    	layer.closePopup()
-
-			    	if (layer.markId) {
-						updateMark(layer.markId)			    			
-			    	} else {
-			    		saveMark(LatLngs, leafletKey, versionId);
-			    	}
-			    })
+	            layer.on('mouseover', () => {
+	    			layer.openPopup();
+	    		})
     		},
     		drawDeleted (event) {
     			var layers = event.layers;
 
     			layers.eachLayer(function (layer) {
+    				if (!layer.markId) return;
+
 					window.bus.$emit('destroyMark', layer.markId, layer.leafletKey)
     			});
     		},
+    		retrieveDraws() {
+    			let end_point = axios.defaults.baseURL + `/marks/versions/${this.version.id}`
+    			
+    			let markForm = function (body) {
+		    		let form = L.DomUtil.create('div', 'row');
+		    		form.innerHTML = `<div class="form-group">
+						<textarea rows="5" class="form-control" id="mark-body">${body}</textarea>
+						<div class="custom-file">
+							<input type="file" class="custom-file-input" id="mark-file">
+							<label class="custom-file-label">Choose file</label>
+						</div>
+						<button id="mark-save-btn" class="btn btn-sm btn-outline-success">save</button>
+					</div>`;
 
+					return form;
+		    	}
 
+    			axios.get(end_point)
+    			    .then(response => {
+    			    	let marks = response.data
 
+    			    	// retrieve all marks to layer
+    			    	marks.forEach(mark => {
+    			    		let l_object = JSON.parse(mark.l_object)
+    			    		let layer = L.geoJSON(l_object).getLayers()[0]
+    			    		layer.markId = mark.id
+    			    		layer.leafletKey = mark.leaflet_key
+    			    		let form = markForm(mark.body)
+
+    			    		layer._leaflet_id = 1000 + mark.id;
+
+    			    		// bind it's own data for popup
+    			    		// layer.bindPopup(form, {minWidth: 200}).addTo(this.mymap)
+    			    		this.drawnItems.addLayer(layer.bindPopup(form, {minWidth: 200}));
+    			    		
+    			    		$("#mark-save-btn", form).on('click', null, { 
+    			    			layer: layer,
+    			    			markId: mark.id, 
+    			    			markBody: $("#mark-body", form), 
+    			    			markFile: $("input:file", form) }, 
+    			    			this.updateMarkToDB);
+
+    			    		layer.on('mouseover', () => {
+    			    			layer.openPopup();
+    			    		})
+
+    			    	})
+    			    })
+    			    .catch(error => {
+    			    	console.log(error)
+    			    })
+    		},
+    		updateMarkToDB (event) {
+    			let markId = event.data.markId;
+    			let markBody = event.data.markBody.val();
+    			let markFile = event.data.markFile.prop('files')[0];
+
+    			let data = new FormData()
+
+		    	if (markFile) {
+		    		let reader = new FileReader()
+		    		reader.readAsDataURL(markFile)
+	    			data.append('file_path', markFile)
+		    	}
+
+	    		data.append('body', markBody)
+	    		data.append('_method', 'PATCH');
+
+            	let end_point = axios.defaults.baseURL + `/marks/${markId}`;
+
+			    axios.post(end_point, data)
+			        .then(response => {
+			        	// display the changes on panel
+			        	event.data.layer.closePopup()
+			        	window.bus.$emit('updateMark', response.data.mark)
+			        })
+			        .catch(error => {
+			        	console.log(error)
+			        })
+    		},
+    		saveMarkToDB (event) {
+    			if (event.data.layer.markId) {
+    				this.updateMarkToDB({
+    					data: {
+    						markId: event.data.layer.markId,
+    						markBody: event.data.markBody,
+    						markFile: event.data.markFile
+    					}
+    				})
+
+    				return;
+    			}
+
+    			let layer = event.data.layer;
+    			let LatLngs = event.data.LatLngs;
+    			let leafletKey = event.data.leafletKey;
+    			let markBody = event.data.markBody.val();
+    			let markFile = event.data.markFile.prop('files')[0];
+    			let data = new FormData()
+
+		    	if (markFile) {
+		    		let reader = new FileReader()
+		    		reader.readAsDataURL(markFile)
+	    			data.append('file_path', markFile)
+		    	}
+
+	    		data.append('l_object', LatLngs)
+	    		data.append('leaflet_key', leafletKey)
+	    		data.append('body', markBody)
+
+		    	let end_point = axios.defaults.baseURL + `/marks/versions/${this.version.id}`;
+			    axios.post(end_point, data)
+			        .then(response => {
+			        	layer.markId = response.data.mark.id
+			        	layer.closePopup()
+			        	// display the new mark on panel
+			        	window.bus.$emit('addMark', response.data.mark)
+			        })
+			        .catch(error => {
+			        	console.log(error)
+			        })
+    		}
 
     	}
     	
