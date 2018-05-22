@@ -6,6 +6,6 @@
 
 @section('content')
 
-  <room :room="{{ $room}}" :version="{{ $version}}" :project="{{ $project }}"></room>
+  <room :current="{{ $room}}" :version="{{ $version}}" :project="{{ $project }}" :rooms="{{ $project->rooms }}"></room>
 
 @endsection
