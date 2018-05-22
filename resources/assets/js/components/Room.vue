@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid">
-        <activities :version="version"></activities>
+        <activities :version="version" :project="project" :current="current" :rooms="rooms"></activities>
     </div>
 </template>
 
@@ -11,7 +11,7 @@
     	components: {
     		Activities
     	},
-        props: ['room', 'version', 'project'],
+        props: ['current', 'version', 'project', 'rooms'],
         
     }
 </script>

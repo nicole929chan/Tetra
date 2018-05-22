@@ -2,7 +2,7 @@
 	<div class="topic m-1">
 	    <div class="comment" style="border-left: 2px solid red;">
 	        <div class="d-flex justify-content-between">
-	    		<h4>{{ activity.creator.name }}</h4>
+	    		<h4 @mouseover="showLeaflet">{{ activity.creator.name }}</h4>
 	    		<div v-text="ago"></div>
 	        </div>
 	    	<p v-if="!editable">
@@ -135,6 +135,10 @@
     			this.errors = null
     			this.editable = false
     		},
+            showLeaflet () {
+                if (this.activity.type == 'Mark')
+                    window.bus.$emit('updateLeaflet', this.activity.id, this.form.body)
+            }
     	}
     	
     }

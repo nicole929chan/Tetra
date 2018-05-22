@@ -176,6 +176,23 @@
 
     			    		layer._leaflet_id = 1000 + mark.id;
 
+    			    		let replies_endpoint = axios.defaults.baseURL + `/marks/${mark.id}/replies`
+
+    			    		
+    			    		axios.get(replies_endpoint)
+    			    		    .then(response => {
+    			    		    	let replies = '<div style="height: 150px; overflow: auto;">';
+    			    				replies += '<div class="col-12"><a href="#">#replies</a></div>';
+    			    		    	for(let index=0; index<response.data.replies.length; index++) {
+    			    		    		replies = replies + '<div class="col-12">' + response.data.replies[index].body + '</div>';
+    			    		    	}
+    			    		    	replies += '</div>';
+    			    				form.innerHTML = form.innerHTML + replies;
+    			    		    })
+    			    		    .catch(error => {
+    			    		    	console.log(error)
+    			    		    })
+
     			    		// bind it's own data for popup
     			    		// layer.bindPopup(form, {minWidth: 200}).addTo(this.mymap)
     			    		this.drawnItems.addLayer(layer.bindPopup(form, {minWidth: 200}));
@@ -231,7 +248,8 @@
     					data: {
     						markId: event.data.layer.markId,
     						markBody: event.data.markBody,
-    						markFile: event.data.markFile
+    						markFile: event.data.markFile,
+    						layer: event.data.layer
     					}
     				})
 
