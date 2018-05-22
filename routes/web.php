@@ -22,6 +22,7 @@ Route::patch('replies/{reply}', 'RepliesController@update')->name('replies.updat
 Route::delete('replies/{reply}', 'RepliesController@destroy')->name('replies.destroy');
 
 Route::get('marks/versions/{version}', 'MarksController@index')->name('marks.index');
+Route::get('marks/{mark}/{replies}', 'MarksController@replies')->name('marks.replies');
 Route::post('marks/versions/{version}', 'MarksController@store')->name('marks.store');
 Route::patch('marks/{mark}', 'MarksController@update')->name('marks.update');
 Route::delete('marks/{mark}', 'MarksController@destroy')->name('marks.destroy');

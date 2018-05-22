@@ -7,9 +7,9 @@
           <div class="col-10 media">
             <img src="https://dummyimage.com/80/828187/ffffff.jpg&text=MNS" class="rounded-circle align-self-center mr-3 ml-3" alt="">
             <div class="media-body align-self-center">
-              75 Greene Avenue,<br>
-              Brooklyn<br>
-              NY 11201
+              {{ project.address }},<br>
+              {{ project.city }}<br>
+              {{ project.state }}
             </div>
           </div>
           <div class="col-2">
@@ -19,8 +19,8 @@
         <div class="row">
           <div class="col p-0">
             <form action="#">
-              <select name="rooms" id="rooms" class="custom-select">
-                <option value="">MASTER BATH 5F</option>
+              <select name="rooms" id="rooms" v-model="selected" class="custom-select" @change="changeRoom">
+                <option v-for="room, index in rooms" :value="room.id">{{ room.name }}</option>
               </select>
             </form>
           </div>
@@ -115,9 +115,10 @@
 		components: {
 			Activity, Leaflet, CommentForm
 		},
-		props: ['version'],
+		props: ['version', 'project', 'current', 'rooms'],
 		data () {
 			return {
+        selected: this.current.id,
 				activities: null,
 				commentable: false,
 				currentUniqueId: 0
@@ -154,8 +155,8 @@
 		    })
 		},
 		mounted() {
-            this.initData()
-        },
+      this.initData()
+    },
 		methods: {
 			initData() {
         		let end_point = '/activities/versions/' + this.version.id
@@ -170,7 +171,7 @@
     		    	this.currentUniqueId = this.activities.length
     		    })
 
-        	},
+      },
 			destroyActivity (activityId, activityType) {
 				let end_point = axios.defaults.baseURL
 
@@ -206,6 +207,9 @@
 
 				window.scrollTo(0, 0)
 			},
+      changeRoom () {
+        alert(this.selected)
+      }
 		}
 	}
 </script>

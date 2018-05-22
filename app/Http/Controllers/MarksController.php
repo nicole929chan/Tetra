@@ -102,4 +102,11 @@ class MarksController extends Controller
 
     	if (request()->expectsJson()) return ['message' => 'Mark Deleted!'];
     }
+
+    public function replies(Mark $mark)
+    {
+        $replies = $mark->replies()->latest()->get();
+
+        if (request()->expectsJson()) return ['replies' => $replies];   
+    }
 }
