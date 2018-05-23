@@ -174,6 +174,10 @@
     			    		layer.leafletKey = mark.leaflet_key
     			    		let form = markForm(mark.body)
 
+    			    		if (mark.creator_id != window.App.user.id) {
+    			    			$("#mark-save-btn", form).remove()
+    			    		}
+
     			    		layer._leaflet_id = 1000 + mark.id;
 
     			    		let replies_endpoint = axios.defaults.baseURL + `/marks/${mark.id}/replies`

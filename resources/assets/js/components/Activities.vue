@@ -57,7 +57,12 @@
       	        </div>
       	        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
       	          <div class="card-body">
-      	            ajax 讀取 files (ActivitiesController)
+      	            <div v-for="activity, index in activities">
+                      <a :href="'/storage/' + activity.file_path" target="_blank" v-if="activity.file_path">#A {{ activity.file_path }}</a>
+                      <div v-for="reply, key in activity.replies">
+                        <a :href="'/storage/' + reply.file_path" target="_blank" v-if="reply.file_path">#R {{ reply.file_path }}</a>
+                      </div>
+                    </div>
       	          </div>
       	        </div>
       	      </div>
@@ -208,7 +213,10 @@
 				window.scrollTo(0, 0)
 			},
       changeRoom () {
-        alert(this.selected)
+        // 跳轉的room's version 為當前作業中的
+        let end_point = axios.defaults.baseURL + `/rooms/${this.selected}`
+
+        location.href = end_point
       }
 		}
 	}

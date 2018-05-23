@@ -33,10 +33,6 @@ Route::get('activities/versions/{version}', 'ActivitiesController@index')->name(
 //     return view('selection');
 // });
 
-Route::get('/rooms/{room}', function (Request $room) {
-    return view('room')->with('room_id', $room);
-});
-
 Route::get('/', function () {
     return view('welcome');
 });
