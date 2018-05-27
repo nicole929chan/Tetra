@@ -24,4 +24,9 @@ $(document).ready(function(){
     });
   });
 
+  // 下拉選單切換到不同room的已經選擇的view selection
+  $("#rooms").change(function (e) {
+    location.href = `/rooms/${$(this).val()}/selection`;
+  })
+
 });

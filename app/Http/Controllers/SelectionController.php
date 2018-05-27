@@ -29,11 +29,11 @@ class SelectionController extends Controller
 
     	$selections = $room->selections;
 
-			if($room->selection > 0){
-				return redirect('/rooms/'.$room->id);
-			} else {
-				return view('selection', compact('selections'))->with('room', $room);
-			}
+		if($room->selection > 0){
+			return redirect('/rooms/'.$room->id.'/selection');
+		} else {
+			return view('selection', compact('selections'))->with('room', $room);
+		}
 
     }
 
@@ -48,6 +48,8 @@ class SelectionController extends Controller
 
         $project = $room->project;
         $selection = $room->selection();
+
+        if (is_null($selection)) return redirect(route('selection.index', [$room->id]));
 
         if (request()->expectsJson()) 
             return ['project' => $project, 'room' => $room, 'selection' => $selection];

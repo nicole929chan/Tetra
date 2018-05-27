@@ -35,6 +35,7 @@ $(document).ready(function(){
           type: "POST",
           url: url + main_img,
           success: function (data) {
+            $("#feedback").prop('disabled', true);
             console.log(data);
             alert(data.message);
           },
@@ -44,5 +45,8 @@ $(document).ready(function(){
         });
     });
 
-
+  // 下拉選單切換到不同room的view selection
+  $("#rooms").change(function (e) {
+    location.href = `/rooms/${$(this).val()}/selections`;
+  })
 });

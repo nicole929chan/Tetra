@@ -127,6 +127,17 @@ class SelectionTest extends TestCase
         $this->get(route('selection.show', [$this->room->id]))->assertStatus(200);
     }
 
+    /** @test */
+    public function 瀏覽的room_selection如果並沒有被submit就導回view_selection()
+    {
+        $this->authorization();
+
+        $room = create('App\Room', ['project_id' => $this->project->id, 'selection' => 0]);
+
+        $this->get(route('selection.show', [$room->id]))
+            ->assertRedirect(route('selection.index', [$room->id]));
+    }
+
     protected function authorization()
     {
         $this->signIn($this->user = create('App\User'));

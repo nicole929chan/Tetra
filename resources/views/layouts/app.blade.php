@@ -30,6 +30,7 @@
 <body>
     <div id="app">
 
+      @yield('profile')
 
       @yield('content')
 

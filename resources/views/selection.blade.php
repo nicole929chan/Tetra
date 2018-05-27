@@ -1,39 +1,61 @@
 @extends('layouts.app')
 
 @section('profile')
-<div id="profile" class="row align-item-center">
-  <div class="col-10 media">
-    <img src="https://dummyimage.com/80/828187/ffffff.jpg&text=MNS" class="rounded-circle align-self-center mr-3 ml-3" alt="">
-    <div class="media-body align-self-center">
-      75 Greene Avenue,<br>
-      Brooklyn<br>
-      NY 11201
+<div class="container-fluid p-0">
+  <div class="row">
+    <div id="sidebar" class="col-3 position-fixed">
+      <div id="profile" class="row align-item-center">
+        <div class="col-10 media">
+          <img src="https://dummyimage.com/80/828187/ffffff.jpg&text=MNS" class="rounded-circle align-self-center mr-3 ml-3" alt="">
+          <div class="media-body align-self-center">
+            {{ $room->project->address }},<br>
+            {{ $room->project->city }} <br>
+            {{ $room->project->state }}
+          </div>
+        </div>
+        <div class="col-2">
+          <a href="#" id="sidebar-arrow"><img src="/images/tools_off.png" alt="" class="mt-5" ></a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col p-0">
+          <form action="#">
+            @include('rooms.rooms', ['project' => $room->project, 'room' => $room])
+          </form>          
+        </div>
+      </div>
+      <div id="command" class="row">
+        <div class="col pr-0 pl-0">
+          <a id="download" href="{{ asset('storage/' . $selections->first()->image_path) }}" class="btn btn-primary btn-block" Download>Download Image</a>
+        </div>
+        <div class="col pr-0 pl-0">
+          <button id="feedback" class="btn btn-danger btn-block">Select View</button>
+        </div>
+      </div>
+    </div>
+    <div class="col p-0">
+      <nav class="navbar navbar-expand-md navbar-light navbar-laravel" id="menu">
+          <div class="container">
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+              </button>
+
+              <div class="collapse navbar-collapse text-center" id="navbarSupportedContent">
+                  <!-- Main Of Navbar -->
+                  <ul class="navbar-nav">
+                      <!-- Authentication Links -->
+                          <li><a class="nav-link" href="#">PROJECTS</a></li>
+                          <li><a class="nav-link" href="#">USERS</a></li>
+                          <li><a class="nav-link" href="#">HELP</a></li>
+                          <li><a  class="nav-link" href="#" id="menu_off"><img src="/images/menu_off.png" alt=""></a></li>
+                  </ul>
+              </div>
+          </div>
+      </nav>
     </div>
   </div>
-  <div class="col-2">
-    <a href="#" id="sidebar-arrow"><img src="{{ asset('/images/tools_off.png')}}" alt="" class="mt-5" ></a>
-  </div>
 </div>
-<div class="row">
-  <div class="col p-0">
-    <form action="#">
-      <select name="rooms" id="rooms" class="custom-select">
-        <option value="">MASTER BATH 5F</option>
-      </select>
-    </form>
-  </div>
-</div>
-@endsection
 
-@section('command')
-<div id="command" class="row">
-  <div class="col pr-0 pl-0">
-    <a id="download" href="{{ asset('storage/' . $selections->first()->image_path) }}" class="btn btn-primary btn-block" Download>Download Image</a>
-  </div>
-  <div class="col pr-0 pl-0">
-    <button id="feedback" class="btn btn-danger btn-block">Submit Feedback</button>
-  </div>
-</div>
 @endsection
 
 @section('content')
