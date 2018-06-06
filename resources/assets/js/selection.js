@@ -28,6 +28,7 @@ $(document).ready(function(){
   $('#feedback').click(function(){
         var main_img = $("#main_img").attr('rel');
         var url = "/rooms/selections/";
+        var roomId = $("#rooms").val();
 
         $.ajax({
           data: main_img,
@@ -36,8 +37,9 @@ $(document).ready(function(){
           url: url + main_img,
           success: function (data) {
             $("#feedback").prop('disabled', true);
-            console.log(data);
+            // console.log(data);
             alert(data.message);
+            location.href = axios.defaults.baseURL + `/rooms/${roomId}/selection`
           },
           error: function (data) {
             console.log('Error:', data);
