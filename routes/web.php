@@ -29,6 +29,8 @@ Route::delete('marks/{mark}', 'MarksController@destroy')->name('marks.destroy');
 
 Route::get('activities/versions/{version}', 'ActivitiesController@index')->name('activities.index');
 
+Route::get('versions/rooms/{room}', 'VersionsController@index')->name('versions.index');
+
 // Route::get('/selection', function () {
 //     return view('selection');
 // });

@@ -105,6 +105,11 @@
               :version="version">
           </leaflet>
         </main>
+
+        <version
+            :room="current"
+            :current="version"
+        ></version>
       </div>
 
     </div>
@@ -115,10 +120,11 @@
 	import Leaflet from './Leaflet';
   import Activity from './Activity';
   import CommentForm from './CommentForm';
+  import Version from './Version';
 
 	export default {
 		components: {
-			Activity, Leaflet, CommentForm
+			Activity, Leaflet, CommentForm, Version
 		},
 		props: ['version', 'project', 'current', 'rooms'],
 		data () {
